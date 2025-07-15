@@ -7,10 +7,10 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/kalender.css">
     <link rel="stylesheet" href="../css/menu.css">
     </head>
 <body>
-
 <body class="font-sans bg-gray-100">
     <header class="bg-gray-800 text-white p-4 shadow-md">
         <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
@@ -102,16 +102,334 @@
             </a>
         </div>
     </section>
+<body>
+    <div class="calendar-container">
+        <div class="calendar-header">
+            <button class="nav-btn" onclick="previousMonth()">‹</button>
+            <h2 id="currentMonth">JULY 2025</h2>
+            <button class="nav-btn" onclick="nextMonth()">›</button>
+        </div>
 
+        <div class="weekdays">
+            <div class="weekday">SUN</div>
+            <div class="weekday">MON</div>
+            <div class="weekday">TUE</div>
+            <div class="weekday">WED</div>
+            <div class="weekday">THU</div>
+            <div class="weekday">FRI</div>
+            <div class="weekday">SAT</div>
+        </div>
 
+        <div class="calendar-grid" id="calendarGrid">
+            <!-- Calendar days will be generated here -->
+        </div>
 
+        <div class="event-popup" id="eventPopup">
+            <h3 id="eventDate"></h3>
+            <div id="eventList"></div>
+        </div>
 
+        <div class="calendar-footer">
+            <div class="today-info" id="todayInfo">
+                Today is Friday, July 11, 2025
+            </div>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color today"></div>
+                    <span>Today</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color event"></div>
+                    <span>Event</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color weekend"></div>
+                    <span>Weekend</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color holiday"></div>
+                    <span>Holiday</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
-
-
-
-
-    
+    <script>
+        // Calendar API Class
+        class CalendarAPI {
+            constructor() {
+                this.currentMonth = 6; // July (0-based)
+                this.currentYear = 2025;
+                this.today = new Date();
+                this.selectedDate = null;
+                
+                // Sample events data
+                this.events = {
+                    '2025-07-01': ['New Month Started'],
+                    '2025-07-04': ['Independence Day Preparation'],
+                    '2025-07-09': ['Team Meeting', 'Project Review'],
+                    '2025-07-11': ['Today - Current Date'],
+                    '2025-07-17': ['Indonesian Independence Day'],
+                    '2025-07-20': ['Weekend Plans'],
+                    '2025-07-25': ['Monthly Report Due'],
+                    '2025-07-31': ['End of Month']
+                };
+                
+                // Indonesian holidays
+                this.holidays = {
+                    '2025-07-17': 'Hari Kemerdekaan RI'
+                };
+                
+                this.init();
+            }
+            
+            init() {
+                this.generateCalendar();
+                this.updateTodayInfo();
+            }
+            
+            generateCalendar() {
+                const grid = document.getElementById('calendarGrid');
+                grid.innerHTML = '';
+                
+                const firstDay = new Date(this.currentYear, this.currentMonth, 1);
+                const lastDay = new Date(this.currentYear, this.currentMonth + 1, 0);
+                const startDate = new Date(firstDay);
+                startDate.setDate(startDate.getDate() - firstDay.getDay());
+                
+                // Generate 42 days (6 weeks)
+                for (let i = 0; i < 42; i++) {
+                    const date = new Date(startDate);
+                    date.setDate(startDate.getDate() + i);
+                    
+                    const dayElement = this.createDayElement(date);
+                    grid.appendChild(dayElement);
+                }
+                
+                this.updateMonthHeader();
+            }
+            
+            createDayElement(date) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = date.getDate();
+                
+                const dateString = this.formatDate(date);
+                const isCurrentMonth = date.getMonth() === this.currentMonth;
+                const isToday = this.isToday(date);
+                const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+                const hasEvent = this.events[dateString];
+                const isHoliday = this.holidays[dateString];
+                
+                // Add classes
+                if (!isCurrentMonth) {
+                    dayElement.classList.add('other-month');
+                }
+                
+                if (isToday) {
+                    dayElement.classList.add('today');
+                }
+                
+                if (isWeekend && isCurrentMonth) {
+                    dayElement.classList.add('weekend');
+                }
+                
+                if (hasEvent) {
+                    dayElement.classList.add('has-event');
+                }
+                
+                if (isHoliday) {
+                    dayElement.classList.add('holiday');
+                }
+                
+                // Add click event
+                dayElement.addEventListener('click', () => {
+                    this.selectDate(date, dayElement);
+                });
+                
+                return dayElement;
+            }
+            
+            selectDate(date, element) {
+                // Remove previous selection
+                const prevSelected = document.querySelector('.calendar-day.selected');
+                if (prevSelected) {
+                    prevSelected.classList.remove('selected');
+                }
+                
+                // Add selection to current element
+                element.classList.add('selected');
+                this.selectedDate = date;
+                
+                // Show events if any
+                this.showEvents(date);
+            }
+            
+            showEvents(date) {
+                const dateString = this.formatDate(date);
+                const events = this.events[dateString];
+                const holiday = this.holidays[dateString];
+                const popup = document.getElementById('eventPopup');
+                const eventDate = document.getElementById('eventDate');
+                const eventList = document.getElementById('eventList');
+                
+                if (events || holiday) {
+                    eventDate.textContent = this.formatDisplayDate(date);
+                    eventList.innerHTML = '';
+                    
+                    if (holiday) {
+                        const holidayElement = document.createElement('div');
+                        holidayElement.className = 'event-item';
+                        holidayElement.style.borderLeftColor = '#dc2626';
+                        holidayElement.textContent = `🏛️ ${holiday}`;
+                        eventList.appendChild(holidayElement);
+                    }
+                    
+                    if (events) {
+                        events.forEach(event => {
+                            const eventElement = document.createElement('div');
+                            eventElement.className = 'event-item';
+                            eventElement.textContent = `📅 ${event}`;
+                            eventList.appendChild(eventElement);
+                        });
+                    }
+                    
+                    popup.classList.add('show');
+                } else {
+                    popup.classList.remove('show');
+                }
+            }
+            
+            previousMonth() {
+                this.currentMonth--;
+                if (this.currentMonth < 0) {
+                    this.currentMonth = 11;
+                    this.currentYear--;
+                }
+                this.generateCalendar();
+                this.hideEventPopup();
+            }
+            
+            nextMonth() {
+                this.currentMonth++;
+                if (this.currentMonth > 11) {
+                    this.currentMonth = 0;
+                    this.currentYear++;
+                }
+                this.generateCalendar();
+                this.hideEventPopup();
+            }
+            
+            hideEventPopup() {
+                document.getElementById('eventPopup').classList.remove('show');
+            }
+            
+            updateMonthHeader() {
+                const monthNames = [
+                    'JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
+                    'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'
+                ];
+                
+                document.getElementById('currentMonth').textContent = 
+                    `${monthNames[this.currentMonth]} ${this.currentYear}`;
+            }
+            
+            updateTodayInfo() {
+                const today = new Date();
+                const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                const monthNames = [
+                    'January', 'February', 'March', 'April', 'May', 'June',
+                    'July', 'August', 'September', 'October', 'November', 'December'
+                ];
+                
+                const todayString = `Today is ${dayNames[today.getDay()]}, ${monthNames[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()}`;
+                document.getElementById('todayInfo').textContent = todayString;
+            }
+            
+            formatDate(date) {
+                return date.toISOString().split('T')[0];
+            }
+            
+            formatDisplayDate(date) {
+                const monthNames = [
+                    'January', 'February', 'March', 'April', 'May', 'June',
+                    'July', 'August', 'September', 'October', 'November', 'December'
+                ];
+                
+                return `${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+            }
+            
+            isToday(date) {
+                const today = new Date();
+                return date.toDateString() === today.toDateString();
+            }
+            
+            // Public API methods
+            addEvent(dateString, eventTitle) {
+                if (!this.events[dateString]) {
+                    this.events[dateString] = [];
+                }
+                this.events[dateString].push(eventTitle);
+                this.generateCalendar();
+            }
+            
+            removeEvent(dateString, eventTitle) {
+                if (this.events[dateString]) {
+                    this.events[dateString] = this.events[dateString].filter(e => e !== eventTitle);
+                    if (this.events[dateString].length === 0) {
+                        delete this.events[dateString];
+                    }
+                    this.generateCalendar();
+                }
+            }
+            
+            getEvents(dateString) {
+                return this.events[dateString] || [];
+            }
+            
+            goToDate(year, month, day) {
+                this.currentYear = year;
+                this.currentMonth = month;
+                this.generateCalendar();
+                
+                if (day) {
+                    const targetDate = new Date(year, month, day);
+                    const dayElements = document.querySelectorAll('.calendar-day');
+                    dayElements.forEach(element => {
+                        if (parseInt(element.textContent) === day && !element.classList.contains('other-month')) {
+                            this.selectDate(targetDate, element);
+                        }
+                    });
+                }
+            }
+        }
+        
+        // Initialize calendar
+        const calendar = new CalendarAPI();
+        
+        // Global functions for navigation
+        function previousMonth() {
+            calendar.previousMonth();
+        }
+        
+        function nextMonth() {
+            calendar.nextMonth();
+        }
+        
+        // Example API usage
+        console.log('Calendar API initialized');
+        console.log('Available methods:');
+        console.log('- calendar.addEvent(dateString, eventTitle)');
+        console.log('- calendar.removeEvent(dateString, eventTitle)');
+        console.log('- calendar.getEvents(dateString)');
+        console.log('- calendar.goToDate(year, month, day)');
+        
+        // Example usage:
+        // calendar.addEvent('2025-07-15', 'New Event');
+        // calendar.goToDate(2025, 6, 15); // Go to July 15, 2025
+    </script>
+</body>
+</html> 
 <footer class="bg-gray-800 text-white p-6 mt-10">
         <div class="container mx-auto flex flex-col md:flex-row justify-between items-start space-y-8 md:space-y-0 md:space-x-8">
             <div class="footer-section flex flex-col items-center md:items-start text-center md:text-left w-full md:w-1/3">
