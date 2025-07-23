@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dinas Komunikasi dan Informatika Kota Tanjungpinang</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --color-primary-red: #e64848;
+            --color-dark-top-bar: #222222;
+            --color-navbar-light-gray: #d1d5db; /* Warna abu-abu muda baru untuk navbar */
+            --color-text-on-light-gray: #374151; /* Warna teks gelap agar terbaca di abu-abu muda */
+        }
+
+        .bg-primary-red {
+            background-color: var(--color-primary-red);
+        }
+         /* PERBAIKAN UTAMA: Dropdown menu */
+        .nav-menu .group {
+            position: relative;
+        }
+
+        .nav-menu .group ul {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            min-width: 12rem;
+            background-color: var(--color-primary-red);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            border-radius: 0.375rem;
+            z-index: 100; /* Pastikan lebih tinggi dari hero section */
+            opacity: 0;
+            transform: translateY(5px);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+           .nav-menu .group:hover ul {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .nav-menu .group ul li a {
+            padding: 0.75rem 1rem;
+            display: block;
+            color: white;
+            transition: background-color 0.2s ease;
+        }
+
+        .nav-menu .group ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+
+
+
+        .bg-dark-top-bar {
+            background-color: var(--color-dark-top-bar);
+        }
+
+        .bg-navbar-light-gray {
+            background-color: var(--color-navbar-light-gray);
+        }
+        .text-on-light-gray {
+            color: var(--color-text-on-light-gray);
+        }
+
+         /* Hero section */
+        .hero-background {
+            background-image: url('images/gedung.jpg');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 4rem;
+            padding-bottom: 4rem;
+            z-index: 1; /* Pastikan di bawah navbar */
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1;
+        }
+
+        /* --- PERBAIKAN PENTING UNTUK DROPDOWN PROFIL --- */
+        .nav-menu .group {
+            position: relative; /* Ini sangat penting! Membuat elemen induk menjadi relatif agar dropdown absolutnya berpatokan padanya. */
+            /* Tambahan: Pastikan tidak ada overflow: hidden; atau transform pada elemen ini atau induknya di atasnya */
+        }
+
+        .nav-menu .group ul { /* Menargetkan elemen UL (dropdown) di dalam LI dengan class .group */
+            display: none; /* Sembunyikan secara default */
+            position: absolute; /* Posisikan secara absolut agar melayang di atas konten lain */
+            top: 100%; /* Tempatkan tepat di bawah item menu utama */
+            left: 0; /* Mulai dari sisi kiri item menu utama */
+            min-width: 12rem; /* Pastikan ada lebar minimum yang cukup agar teks tidak terpotong */
+            background-color: var(--color-primary-red); /* Warna background dropdown */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Tambahkan bayangan untuk visual yang lebih baik */
+            border-radius: 0.375rem; /* Sudut membulat */
+            z-index: 9999; /* Tingkatkan z-index ke nilai yang sangat tinggi untuk memastikan di atas elemen lain */
+            flex-direction: column; /* Atur item dropdown agar tersusun vertikal */
+            
+            /* Transisi untuk efek muncul/sembunyi yang halus (opsional, tapi disarankan) */
+            opacity: 0;
+            transform: translateY(5px); /* Sedikit bergeser ke bawah saat muncul */
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+            pointer-events: none; /* Nonaktifkan interaksi saat dropdown tersembunyi */
+        }
+
+        /* Tampilkan dropdown saat elemen LI dengan class .group di-hover */
+        .nav-menu .group:hover > ul {
+            display: flex !important; /* Paksa display flex. !important digunakan untuk mengatasi potensi prioritas CSS Tailwind lainnya. */
+            opacity: 1; /* Transisi opacity ke 1 (penuh terlihat) */
+            transform: translateY(0); /* Kembali ke posisi aslinya */
+            pointer-events: auto; /* Aktifkan interaksi mouse saat dropdown terlihat */
+        }
+
+        /* Gaya untuk link di dalam dropdown (Visi & Misi, Struktur, Tupoksi) */
+        .nav-menu .group ul li a {
+            padding: 0.75rem 1rem; /* Padding lebih nyaman untuk area klik */
+            display: block; /* Pastikan link mengisi seluruh lebar item */
+            white-space: nowrap; /* Mencegah teks patah baris */
+            color: white; /* Warna teks di dalam dropdown */
+            transition: background-color 0.2s ease; /* Transisi warna background saat hover */
+        }
+
+        .nav-menu .group ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.2); /* Warna background saat hover di item dropdown */
+            color: white; /* Pastikan teks tetap putih saat hover */
+        }
+        /* --- AKHIR PERBAIKAN DROPDOWN PROFIL --- */
+
+
+        .nav-menu ul li a {
+            padding: 0.5rem 1rem;
+            display: block;
+            white-space: nowrap;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-menu ul li a:hover {
+            background-color: rgba(0, 0, 0, 0.1); /* Hover color for light gray nav */
+        }
+        
+        /* Additional styles from the image */
+        .top-bar {
+            background-color: #222;
+            color: white;
+            padding: 5px 0;
+            font-size: 12px;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-text {
+            font-weight: bold;
+            margin-left: 15px;
+            line-height: 1.2;
+        }
+        
+        .quick-access {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Default for small screens */
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        @media (min-width: 640px) { /* sm breakpoint */
+            .quick-access {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (min-width: 1024px) { /* lg breakpoint */
+            .quick-access {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+        
+        .quick-access-item {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .quick-access-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .quick-access-icon {
+            background: #e64848;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .footer-section {
+            padding: 20px;
+        }
+        
+        .visitor-stats {
+            background: #6b7280; /* Changed to gray */
+            padding: 15px;
+            border-radius: 5px;
+        }
+        
+        .stat-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #9ca3af;
+            display: flex; /* Ensure flex for proper alignment */
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .popular-news li {
+            background-color: #4a5568; /* Darker gray for popular news items */
+        }
+        .popular-news li:hover {
+            background-color: #64748b; /* Lighter on hover */
+        }
+
+        /* Adjustments for centering nav menu items when searchbar is removed */
+        .nav-menu-container {
+            display: flex;
+            justify-content: center; /* Center the nav menu */
+            width: 100%; /* Take full width to allow centering */
+        }
+            /* Header dan Navbar */
+        header {
+            position: relative;
+            z-index: 50;
+        }
+
+        nav {
+            position: relative;
+            z-index: 50;
+        }
+
+        /* Konten hero */
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+    </style>
+
+</head>
+
+<body class="font-sans bg-gray-100">
+
+    <header class="bg-primary-red text-white py-4 px-4 shadow-md relative z-20">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center space-x-4 mb-4 md:mb-0">
+                <img src="images/logo.png" alt="Logo Kota Tanjungpinang" class="w-16 h-16 object-contain">
+                <div class="text-lg font-bold text-center md:text-left">
+                    <div>DINAS KOMUNIKASI DAN INFORMATIKA</div>
+                    <div>KOTA TANJUNGPINANG</div>
+                </div>
+            </div>
+            <div class="flex space-x-4">
+                <a href="http://youtube.com/" class="hover:text-gray-300"><i class="fab fa-youtube text-xl"></i></a>
+                <a href="https://instagram.com/diskominfotanjungpinang" class="hover:text-gray-300"><i class="fab fa-instagram text-xl"></i></a>
+                <a href="https://facebook.com/KominfoTanjungpinang" class="hover:text-gray-300"><i class="fab fa-facebook text-xl"></i></a>
+                <a href="#" class="text-white"><i class="fas fa-user text-2xl"></i></a>
+            </div>
+        </div>
+    </header>
+
+  <nav class="bg-gray-800 text-white p-4 shadow-md relative z-10">
+    <div class="container mx-auto flex flex-col md:flex-row justify-center items-center">
+        <ul class="nav-menu flex flex-col md:flex-row gap-6 font-bold text-center md:text-left relative z-50 mb-4 md:mb-0">
+            <li><a href="index.html" class="hover:text-blue-300 transition duration-300">BERANDA</a></li>
+
+            <li class="relative group">
+                <a href="#" class="hover:text-blue-300 flex items-center transition duration-300">
+                    PROFIL <i class="fas fa-chevron-down ml-2 text-xs"></i>
+                </a>
+                <ul class="absolute hidden group-hover:flex flex-col">
+                    <li><a href="menu/visi.html" class="hover:bg-blue-600 rounded-t-md">Visi & Misi</a></li>
+                    <li><a href="menu/struktur.html" class="hover:bg-blue-600">Struktur Organisasi</a></li>
+                    <li><a href="menu/tupoksi.html" class="hover:bg-blue-600 rounded-b-md">Tupoksi</a></li>
+                </ul>
+            </li>
+
+            <li><a href="menu/berita.html" class="hover:text-blue-300 transition duration-300">BERITA</a></li>
+            <li><a href="menu/galeri.html" class="hover:text-blue-300 transition duration-300">GALERI</a></li>
+            <li><a href="menu/artikel.html" class="hover:text-blue-300 transition duration-300">ARTIKEL</a></li>
+            <li><a href="menu/pengumuman.html" class="hover:text-blue-300 transition duration-300">PENGUMUMAN</a></li>
+            <li><a href="menu/kalender.html" class="hover:text-blue-300 transition duration-300">KALENDER</a></li>
+            <li><a href="menu/download.html" class="hover:text-blue-300 transition duration-300">DOWNLOAD</a></li>
+            <li><a href="menu/statistik.html" class="hover:text-blue-300 transition duration-300">STATISTIK</a></li>
+        </ul>
+    </div>
+</nav>
+
+    <section class="hero-background text-white p-4">
+        <div class="hero-overlay"></div>
+        <div class="relative z-10 text-center max-w-6xl mx-auto px-4 flex flex-col items-center justify-center h-full">
+            <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">PEMERINTAH <br> KOTA TANJUNGPINANG</h1>
+            
+            <div class="bg-primary-red bg-opacity-90 p-8 rounded-lg shadow-2xl mb-12 max-w-3xl mx-auto">
+                <p class="text-xl md:text-2xl font-semibold mb-4">Visi dan Misi Wali Kota Tanjungpinang:</p>
+                <p class="text-lg md:text-xl leading-relaxed">
+                    Mewujudkan Tanjungpinang sebagai Kota yang Berbudaya, Indah, Melayani, dan Aman untuk menjadi tempat tinggal, investasi, bisnis, dan kreatif.
+                </p>
+            </div>
+            
+            <div class="flex flex-col md:flex-row justify-center items-end space-y-8 md:space-y-0 md:space-x-16 mt-auto">
+                <div class="flex flex-col items-center">
+                    <div class="w-48 h-48 md:w-56 md:h-56 bg-gray-400 rounded-full overflow-hidden border-4 border-white shadow-lg mb-4">
+                        <img src="images/Potret_Wali_Kota_Tanjungpinang_Lis_Darmansyah.jpg" alt="H. LIS DARMANSYAH, S.H." class="w-full h-full object-cover">
+                    </div>
+                    <div class="text-lg font-bold">H. LIS DARMANSYAH, S.H.</div>
+                    <div class="text-md text-gray-200">WALI KOTA TANJUNGPINANG</div>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="w-48 h-48 md:w-56 md:h-56 bg-gray-400 rounded-full overflow-hidden border-4 border-white shadow-lg mb-4">
+                        <img src="images/DR. H. RAJA ARIZA, M.M..jpg" alt="DR. H. RAJA ARIZA, M.M." class="w-full h-full object-cover">
+                    </div>
+                    <div class="text-lg font-bold">DR. H. RAJA ARIZA, M.M.</div>
+                    <div class="text-md text-gray-200">WAKIL WALI KOTA TANJUNGPINANG</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="news-section py-10 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl font-bold">BERITA TERKINI</h2>
+                <a href="menu/berita.html" class="text-primary-red hover:underline">Lihat Semua Berita →</a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <article class="news-card bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                    <img src="images/iya 1.png" alt="News Image" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <div class="news-meta text-gray-600 text-sm mb-2 flex items-center justify-between">
+                            <span><i class="fas fa-calendar-alt mr-1"></i> 15 Jan 2025</span>
+                            <span><i class="fas fa-eye mr-1"></i> 120</span>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">Pj. Wali Kota Beri Apresiasi pada Wajib Pajak</h3>
+                        <p class="text-gray-700 text-sm mb-3">Penjabat Wali Kota Tanjungpinang, Hasan Sarmansyah memberikan apresiasi kepada wajib pajak yang telah membayar pajak tepat waktu...</p>
+                    </div>
+                </article>
+                <article class="news-card bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                    <img src="images/iya 1.png" alt="News Image" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <div class="news-meta text-gray-600 text-sm mb-2 flex items-center justify-between">
+                            <span><i class="fas fa-calendar-alt mr-1"></i> 14 Jan 2025</span>
+                            <span><i class="fas fa-eye mr-1"></i> 95</span>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">Rapat Koordinasi Pembangunan Infrastruktur</h3>
+                        <p class="text-gray-700 text-sm mb-3">Rapat koordinasi penting diadakan untuk membahas progres pembangunan infrastruktur kota...</p>
+                    </div>
+                </article>
+                <article class="news-card bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                    <img src="images/iya 1.png" alt="News Image" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <div class="news-meta text-gray-600 text-sm mb-2 flex items-center justify-between">
+                            <span><i class="fas fa-calendar-alt mr-1"></i> 13 Jan 2025</span>
+                            <span><i class="fas fa-eye mr-1"></i> 150</span>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">Peluncuran Program Smart City Tanjungpinang</h3>
+                        <p class="text-gray-700 text-sm mb-3">Pemerintah Kota Tanjungpinang secara resmi meluncurkan program Smart City...</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="statistics-section py-10 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold mb-2 text-gray-800">STATISTIKA</h2>
+                <p class="text-gray-600">Indeks SPBE Kota Tanjungpinang Tahun 2021 s/d 2024</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div class="chart-box bg-white p-4 sm:p-6 rounded-lg shadow-md h-80 md:h-96 border border-gray-200">
+                    <canvas id="barChart"></canvas>
+                </div>
+                <div class="chart-box bg-white p-4 sm:p-6 rounded-lg shadow-md h-80 md:h-96 border border-gray-200">
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-8 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="info-box bg-white p-6 rounded-lg shadow-md h-full flex flex-col items-center text-center">
+                    <div class="info-box-icon bg-primary-red text-white w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-chart-pie text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Infografis</h3>
+                    <p class="text-gray-600">Sebagai infografis memuat data Diskominfo Kota Tanjungpinang secara visual dan informatif.</p>
+                </div>
+                
+                <div class="info-box bg-white p-6 rounded-lg shadow-md h-full flex flex-col items-center text-center">
+                    <div class="info-box-icon bg-primary-red text-white w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-newspaper text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">GPR Kominfo</h3>
+                    <p class="text-gray-600">Portal Berita Resmi Pemerintah Kota Tanjungpinang yang menyajikan informasi terkini.</p>
+                </div>
+                
+                <div class="info-box bg-white p-6 rounded-lg shadow-md h-full flex flex-col items-center text-center">
+                    <div class="info-box-icon bg-primary-red text-white w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-mobile-alt text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Sarana Aplikasi</h3>
+                    <p class="text-gray-600">Akses cepat ke aplikasi penting Pemerintah Kota Tanjungpinang untuk pelayanan publik.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-800 text-white p-6 mt-10">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-start space-y-8 md:space-y-0 md:space-x-8">
+            <div class="footer-section flex flex-col items-center md:items-start text-center md:text-left w-full md:w-1/3">
+                <img src="images/logo.png" alt="Logo Kota Tanjungpinang" class="w-20 h-20 object-contain mb-4">
+                <h3 class="text-xl font-bold mb-4">Hubungi Kami</h3>
+                <p class="text-sm mb-2"><i class="fas fa-map-marker-alt mr-2"></i> <strong>Alamat:</strong> Jl. Basuki Rahmat No. 4, Tanjungpinang, Kepulauan Riau, Indonesia 29124</p>
+                <p class="text-sm mb-2"><i class="fas fa-envelope mr-2"></i> <strong>Email:</strong> diskominfo@tanjungpinangkota.go.id</p>
+                <p class="text-sm"><i class="fas fa-phone-alt mr-2"></i> <strong>Telepon:</strong> (0771) 21694</p>
+            </div>
+
+            <div class="footer-section text-center md:text-left w-full md:w-1/3">
+                <h3 class="text-xl font-bold mb-4">Statistik Pengunjung</h3>
+                <div class="visitor-stats text-sm space-y-2">
+                    <div class="stat-item flex justify-between items-center p-2">
+                        <span class="flex items-center"><span class="status-indicator bg-green-500"></span>Online</span>
+                        <span id="visitorsOnline">1</span>
+                    </div>
+                    <div class="stat-item flex justify-between items-center p-2">
+                        <span class="flex items-center"><span class="status-indicator bg-yellow-500"></span>Hari ini</span>
+                        <span id="visitorsToday">45</span>
+                    </div>
+                    <div class="stat-item flex justify-between items-center p-2">
+                        <span class="flex items-center"><span class="status-indicator bg-blue-500"></span>Total</span>
+                        <span id="visitorsTotal">12,456</span>
+                    </div>
+                </div>
+                <button class="guest-book-btn mt-6 bg-primary-red text-white px-6 py-3 rounded-md hover:bg-red-700 transition duration-300 w-full">
+                    <i class="fas fa-book mr-2"></i> Isi Buku Tamu
+                </button>
+            </div>
+
+            <div class="footer-section text-center md:text-left w-full md:w-1/3">
+                <h3 class="text-xl font-bold mb-4">Berita Populer</h3>
+                <ul class="popular-news text-sm space-y-3">
+                    <li class="flex items-start p-2 hover:bg-gray-700 rounded transition duration-300">
+                        <div class="news-date text-primary-red font-semibold mr-3">15 Jan</div>
+                        <div>Pj. Wali Kota Beri Apresiasi pada Wajib Pajak</div>
+                    </li>
+                    <li class="flex items-start p-2 hover:bg-gray-700 rounded transition duration-300">
+                        <div class="news-date text-primary-red font-semibold mr-3">14 Jan</div>
+                        <div>Rapat Koordinasi Pembangunan Infrastruktur</div>
+                    </li>
+                    <li class="flex items-start p-2 hover:bg-gray-700 rounded transition duration-300">
+                        <div class="news-date text-primary-red font-semibold mr-3">13 Jan</div>
+                        <div>Peluncuran Program Smart City Tanjungpinang</div>
+                    </li>
+                    <li class="flex items-start p-2 hover:bg-gray-700 rounded transition duration-300">
+                        <div class="news-date text-primary-red font-semibold mr-3">12 Jan</div>
+                        <div>Sosialisasi Aplikasi Pelayanan Digital</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-400">
+            <p>© 2025 Dinas Komunikasi dan Informatika Kota Tanjungpinang_KP_UMRAH_TEKNIK INFORMATIKA ©</p>
+        </div>
+    </footer>
+
+    <script>
+        // Data for Chart.js (Static Example Data)
+        const labels = ['2021', '2022', '2023', '2024'];
+        const spbeData = {
+            '2021': 2.89,
+            '2022': 3.15,
+            '2023': 3.52,
+            '2024': 3.80
+        };
+
+        // 1. Bar Chart Configuration
+        const barChartCanvas = document.getElementById('barChart');
+        if (barChartCanvas) {
+            new Chart(barChartCanvas, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Indeks SPBE',
+                        data: Object.values(spbeData),
+                        backgroundColor: '#e64848',
+                        borderColor: '#c13b3b',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Grafik Indeks SPBE per Tahun',
+                            font: { size: 16 }
+                        },
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Nilai Indeks'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 2. Line Chart Configuration
+        const lineChartCanvas = document.getElementById('lineChart');
+        if (lineChartCanvas) {
+            new Chart(lineChartCanvas, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Tren Indeks SPBE',
+                        data: Object.values(spbeData),
+                        fill: false,
+                        borderColor: '#e64848',
+                        tension: 0.1,
+                        backgroundColor: '#e64848',
+                        pointBackgroundColor: '#e64848',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#e64848'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Tren Kenaikan Indeks SPBE',
+                            font: { size: 16 }
+                        },
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: 'Nilai Indeks'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Skrip untuk simulasi statistik pengunjung
+        function updateVisitorStats() {
+            const onlineSpan = document.getElementById('visitorsOnline');
+            const todaySpan = document.getElementById('visitorsToday');
+            const totalSpan = document.getElementById('visitorsTotal');
+
+            if (onlineSpan) onlineSpan.textContent = (Math.floor(Math.random() * 10) + 1).toLocaleString(); // 1-10
+            if (todaySpan) todaySpan.textContent = (Math.floor(Math.random() * 200) + 50).toLocaleString(); // 50-250
+            if (totalSpan) totalSpan.textContent = (Math.floor(Math.random() * 50000) + 10000).toLocaleString(); // 10k-60k
+        }
+        updateVisitorStats(); // Initial update
+        setInterval(updateVisitorStats, 5000); // Update every 5 seconds
+    </script>
+</body>
+</html>

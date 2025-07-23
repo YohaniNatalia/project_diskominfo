@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dinas Komunikasi dan Informatika Kota Tanjungpinang</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ========================================= */
+        /* COLOR VARIABLES                */
+        /* ========================================= */
+        :root {
+            /* Header & Navbar Colors (from image_59e902.jpg) */
+            --color-primary-red: #e64848;
+            --color-navbar-light-gray: #d1d5db;
+            --color-text-on-light-gray: #374151;
+            
+            /* General Accent Colors */
+            --color-link-hover: #3b82f6; /* Blue for general link hover, search button, Selengkapnya link */
+            --color-text-white: #f9fafb; /* White/off-white for text on dark backgrounds */
+            
+            /* Footer Colors (from image_5880dd.png) */
+            --color-footer-bg: #1a202c; /* Very dark gray, almost black */
+            --color-footer-section-bg: #2d3748; /* Dark gray for inner boxes */
+            --color-footer-text: #e2e8f0; /* Light text for footer */
+            --color-footer-button-red: #e64848; /* Red for "Isi Buku Tamu" button */
+            --color-footer-button-hover: #cc3f3f; /* Darker red for button hover */
+            --color-footer-news-date: #90cdf4; /* Light blue for news dates */
+        }
+
+        /* ========================================= */
+        /* GLOBAL/BASE STYLES             */
+        /* ========================================= */
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* ========================================= */
+        /* HEADER STYLES                  */
+        /* ========================================= */
+        header {
+            background-color: var(--color-primary-red); /* Header background as red */
+            color: var(--color-text-white); /* Header text as white */
+        }
+        .social-icons a {
+            color: var(--color-text-white); /* Social icons white */
+        }
+        .social-icons a:hover {
+            color: var(--color-link-hover); /* Social icons hover as blue */
+        }
+        /* Ensure logo in header is visible and not affected */
+        header .logo-img { /* Added a class for specific targeting */
+            filter: none; /* Remove any potential unwanted filter */
+        }
+
+
+        /* ========================================= */
+        /* NAVBAR STYLES                  */
+        /* ========================================= */
+       
+        /* Specific styles for active category button (from your original code) */
+        .category-button.active {
+            background-color: var(--color-primary-red);
+            color: white;
+        }
+
+        /* ========================================= */
+        /* SECTION ICONS STYLES           */
+        /* ========================================= */
+        section .bg-blue-500 { background-color: var(--color-link-hover); }
+        section .hover\:bg-blue-600:hover { background-color: var(--color-footer-button-hover); }
+        section .bg-purple-500 { background-color: #9F7AEA; } /* Fixed colors for these icons */
+        section .bg-green-500 { background-color: #48BB78; }
+        section .bg-red-500 { background-color: #F56565; }
+        section .bg-orange-500 { background-color: #ED8936; }
+
+        /* ========================================= */
+        /* CAROUSEL PENGUMUMAN STYLES     */
+        /* ========================================= */
+        .carousel-container {
+            background-color: #fff; /* White background */
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 1200px; /* Limit width */
+            margin: 2rem auto; /* Center it with margin */
+            border-radius: 0.5rem; /* Rounded corners */
+            overflow: hidden; /* Hide overflow from track */
+        }
+        .carousel-header {
+            background-color: #f3f4f6; /* Light gray header */
+            color: #1f2937; /* Dark text */
+            padding: 1rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-align: center;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .search-announcement-bar {
+            background-color: #f9fafb;
+            padding: 1rem;
+            display: flex; /* Use flex for input and button */
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .search-announcement-bar input {
+            flex-grow: 1; /* Allow input to grow */
+            max-width: 500px; /* Limit input width */
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem 0 0 0.375rem; /* Rounded left only */
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .search-announcement-bar input:focus {
+            border-color: var(--color-link-hover);
+        }
+        .search-announcement-bar button {
+            background-color: var(--color-link-hover); /* Blue search button */
+            color: var(--color-text-white);
+            padding: 0.75rem 1rem;
+            border-radius: 0 0.375rem 0.375rem 0; /* Rounded right only */
+            transition: background-color 0.3s;
+        }
+        .search-announcement-bar button:hover {
+            background-color: var(--color-footer-button-hover); /* Darker blue on hover */
+        }
+
+        .carousel-wrapper {
+            position: relative;
+            overflow: hidden; /* Important for hiding extra slides */
+            padding: 1.5rem 0; /* Vertical padding */
+        }
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        .carousel-slide {
+            min-width: 100%; /* Each slide takes full width of wrapper */
+            box-sizing: border-box; /* Include padding/border in width */
+            display: flex; /* Use flex for image and content */
+            flex-direction: column; /* Stack vertically on small screens */
+            align-items: center; /* Center items vertically */
+            padding: 0 1.5rem; /* Horizontal padding */
+            text-align: center; /* Center text for mobile */
+        }
+        @media (min-width: 768px) { /* Medium screens and up */
+            .carousel-slide {
+                flex-direction: row; /* Horizontal layout */
+                align-items: flex-start; /* Align to top */
+                text-align: left; /* Align text to left */
+            }
+        }
+        .slide-image {
+            flex-shrink: 0; /* Don't shrink image */
+            width: 150px; /* Fixed width */
+            height: 150px; /* Fixed height for consistency */
+            margin-bottom: 1.5rem; /* Space below image on mobile */
+            border-radius: 0.375rem;
+            overflow: hidden; /* Ensure image fits well */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        @media (min-width: 768px) {
+            .slide-image {
+                margin-right: 2rem; /* Space to the right of image on desktop */
+                margin-bottom: 0; /* No bottom margin on desktop */
+            }
+        }
+        .slide-image img {
+            width: 100%;
+            height: 100%; /* Fill the fixed height */
+            object-fit: cover; /* Crop if necessary to fit */
+            border-radius: inherit;
+        }
+        .slide-content {
+            flex-grow: 1; /* Allow content to take remaining space */
+        }
+        .slide-content h3 {
+            font-size: 1.25rem; /* Text-xl */
+            font-weight: 700; /* Font-bold */
+            margin-bottom: 0.75rem;
+            color: #1f2937;
+        }
+        .slide-content ul {
+            list-style: disc; /* Bullet points */
+            list-style-position: inside; /* Bullets inside content box */
+            margin-bottom: 1rem;
+            color: #374151;
+            padding-left: 1.5rem; /* Indent list items */
+            text-align: left; /* Ensure list text aligns left */
+        }
+        .slide-content li {
+            margin-bottom: 0.5rem;
+        }
+        .slide-footer {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+            color: #4b5563;
+            text-align: left; /* Align footer text to left */
+            width: 100%; /* Occupy full width */
+        }
+        .slide-footer p {
+            margin-bottom: 0.5rem;
+        }
+        .slide-footer .date {
+            color: var(--color-link-hover); /* Blue for "Selengkapnya" link */
+            font-weight: 600;
+        }
+        
+        /* Carousel Navigation Arrows */
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: var(--color-text-white);
+            border: none;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            z-index: 10;
+            font-size: 1.5rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.3s;
+        }
+        .carousel-nav:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        .carousel-nav.prev {
+            left: 1rem;
+        }
+        .carousel-nav.next {
+            right: 1rem;
+        }
+
+        /* Carousel Indicators */
+        .carousel-indicators {
+            background-color: #f9fafb;
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        .indicator {
+            background-color: #d1d5db; /* Light gray for inactive */
+            color: #4b5563;
+            border: none;
+            width: 2rem; /* Width for button */
+            height: 2rem; /* Height for button */
+            border-radius: 0.25rem; /* Slightly rounded */
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        .indicator.active {
+            background-color: var(--color-link-hover); /* Blue for active */
+            color: var(--color-text-white);
+        }
+        .next-prev-text {
+            color: #4b5563;
+            font-size: 0.875rem;
+            margin: 0 0.5rem;
+        }
+
+
+        /* ========================================= */
+        /* FOOTER STYLES                  */
+        /* ========================================= */
+        footer {
+            background-color: var(--color-footer-bg);
+            color: var(--color-footer-text);
+        }
+        .footer-section h3 {
+            color: var(--color-footer-text);
+        }
+        .footer-section p, .footer-section strong {
+            color: var(--color-footer-text);
+        }
+        /* Adjusted filter for footer logo to ensure it's bright/white on dark background */
+        .footer-section .logo-img { /* Added a class for specific targeting */
+            filter: brightness(0) invert(1); /* Changes black to white, white to black. Ideal for converting dark logos to white. */
+            /* If your logo is already white but looks dull, use: filter: brightness(1); */
+            /* If your logo is colored and you want it to remain colored, use: filter: none; */
+        }
+
+        .visitor-stats .stat-item,
+        .popular-news li {
+            background-color: var(--color-footer-section-bg);
+            color: var(--color-footer-text);
+            padding: 0.75rem 1rem; /* Added padding */
+            border-radius: 0.375rem; /* Rounded corners */
+            display: flex; /* Ensure flex for alignment */
+            justify-content: space-between; /* Space out content */
+            align-items: center; /* Center vertically */
+        }
+        .popular-news li div:first-child { /* Date part */
+            flex-shrink: 0;
+            min-width: 60px; /* Give date enough space */
+        }
+        .news-date {
+            color: var(--color-footer-news-date);
+        }
+        .guest-book-btn {
+            background-color: var(--color-footer-button-red);
+            color: var(--color-text-white);
+        }
+        .guest-book-btn:hover {
+            background-color: var(--color-footer-button-hover);
+        }
+
+        /* ========================================= */
+        /* COPYRIGHT BAR STYLES           */
+        /* ========================================= */
+        .copyright-bar {
+            background-color: var(--color-footer-bg);
+            color: var(--color-footer-text);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            text-align: center; /* Added this line to center the text */
+            font-size: 0.875rem; /* text-sm */
+        }
+        .copyright-bar p {
+            margin: 0; /* Ensure no extra margin on the paragraph */
+        }
+        /* Variabel CSS disesuaikan dengan yang Anda berikan */
+        :root {
+            --color-primary-red: #e64848;
+            --color-dark-top-bar: #222222;
+            --color-light-gray: #f8f8f8;
+            --color-text-dark: #333;
+        }
+
+        /* Kelas Tailwind kustom yang Anda definisikan */
+        .bg-primary-red {
+            background-color: var(--color-primary-red);
+        }
+        .text-primary-red {
+            color: var(--color-primary-red);
+        }
+        .bg-dark-top-bar {
+            background-color: var(--color-dark-top-bar);
+        }
+
+         /* --- PERBAIKAN PENTING UNTUK DROPDOWN PROFIL --- */
+        .nav-menu .group {
+            position: relative; /* Ini sangat penting! Membuat elemen induk menjadi relatif agar dropdown absolutnya berpatokan padanya. */
+            /* Tambahan: Pastikan tidak ada overflow: hidden; atau transform pada elemen ini atau induknya di atasnya */
+        }
+
+        .nav-menu .group ul { /* Menargetkan elemen UL (dropdown) di dalam LI dengan class .group */
+            display: none; /* Sembunyikan secara default */
+            position: absolute; /* Posisikan secara absolut agar melayang di atas konten lain */
+            top: 100%; /* Tempatkan tepat di bawah item menu utama */
+            left: 0; /* Mulai dari sisi kiri item menu utama */
+            min-width: 12rem; /* Pastikan ada lebar minimum yang cukup agar teks tidak terpotong */
+            background-color: var(--color-primary-red); /* Warna background dropdown */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Tambahkan bayangan untuk visual yang lebih baik */
+            border-radius: 0.375rem; /* Sudut membulat */
+            z-index: 9999; /* Tingkatkan z-index ke nilai yang sangat tinggi untuk memastikan di atas elemen lain */
+            flex-direction: column; /* Atur item dropdown agar tersusun vertikal */
+            
+            /* Transisi untuk efek muncul/sembunyi yang halus (opsional, tapi disarankan) */
+            opacity: 0;
+            transform: translateY(5px); /* Sedikit bergeser ke bawah saat muncul */
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+            pointer-events: none; /* Nonaktifkan interaksi saat dropdown tersembunyi */
+        }
+
+        /* Tampilkan dropdown saat elemen LI dengan class .group di-hover */
+        .nav-menu .group:hover > ul {
+            display: flex !important; /* Paksa display flex. !important digunakan untuk mengatasi potensi prioritas CSS Tailwind lainnya. */
+            opacity: 1; /* Transisi opacity ke 1 (penuh terlihat) */
+            transform: translateY(0); /* Kembali ke posisi aslinya */
+            pointer-events: auto; /* Aktifkan interaksi mouse saat dropdown terlihat */
+        }
+
+        /* Gaya untuk link di dalam dropdown (Visi & Misi, Struktur, Tupoksi) */
+        .nav-menu .group ul li a {
+            padding: 0.75rem 1rem; /* Padding lebih nyaman untuk area klik */
+            display: block; /* Pastikan link mengisi seluruh lebar item */
+            white-space: nowrap; /* Mencegah teks patah baris */
+            color: white; /* Warna teks di dalam dropdown */
+            transition: background-color 0.2s ease; /* Transisi warna background saat hover */
+        }
+
+        .nav-menu .group ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.2); /* Warna background saat hover di item dropdown */
+            color: white; /* Pastikan teks tetap putih saat hover */
+        }
+        /* --- AKHIR PERBAIKAN DROPDOWN PROFIL --- */
+
+
+        /* Specific styles for active category button (from your original code) */
+        .category-button.active {
+            background-color: var(--color-primary-red);
+            color: white;
+        }
+
+        /* Custom styles for article content sections */
+        .article-section-card {
+            background-color: white;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* shadow-lg */
+            padding: 2.5rem; /* p-10 */
+            margin-bottom: 2.5rem; /* mb-10 */
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem; /* gap-6 */
+        }
+
+        .article-section-card.image-right {
+            flex-direction: column; /* Default for mobile */
+        }
+        @media (min-width: 768px) { /* md breakpoint */
+            .article-section-card.image-right {
+                flex-direction: row;
+            }
+        }
+
+        .article-section-card.image-left {
+            flex-direction: column; /* Default for mobile */
+        }
+        @media (min-width: 768px) { /* md breakpoint */
+            .article-section-card.image-left {
+                flex-direction: row-reverse; /* Reverse order for image-left */
+            }
+        }
+
+        .article-section-card .content-text {
+            flex: 1;
+        }
+
+        .article-section-card .content-image {
+            flex: 0 0 auto; /* Don't grow, don't shrink */
+            width: 100%;
+            max-width: 300px; /* Adjust as needed */
+            object-fit: cover;
+            border-radius: 0.5rem; /* rounded-lg */
+        }
+        @media (min-width: 768px) {
+            .article-section-card .content-image {
+                width: 50%; /* Adjust image width in larger screens */
+            }
+        }
+
+        .article-section-card h3 {
+            font-size: 1.75rem; /* text-3xl */
+            font-weight: 700; /* font-bold */
+            color: var(--color-text-dark); /* text-gray-800 */
+            margin-bottom: 1rem; /* mb-4 */
+            position: relative;
+            padding-bottom: 0.5rem; /* pb-2 */
+        }
+
+        .article-section-card h3::after {
+            content: '';
+            width: 3.75rem; /* 60px */
+            height: 0.1875rem; /* 3px */
+            background-color: var(--color-primary-red);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            border-radius: 0.125rem; /* 2px */
+        }
+
+        .article-section-card ul {
+            list-style: none; /* Remove default bullets */
+            padding-left: 0;
+        }
+
+        .article-section-card ul li {
+            margin-bottom: 0.5rem; /* mb-2 */
+            padding-left: 1.5rem; /* pl-6 */
+            position: relative;
+            color: #4b5563; /* text-gray-700 */
+        }
+
+        .article-section-card ul li::before {
+            content: '\f00c'; /* Font Awesome checkmark icon */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900; /* Solid icon */
+            color: var(--color-primary-red);
+            position: absolute;
+            left: 0;
+            top: 0.25rem; /* Adjust vertical alignment */
+            font-size: 0.9em;
+        }
+
+        .article-section-card blockquote {
+            background-color: #f3f4f6; /* bg-gray-100 */
+            border-left: 0.25rem solid var(--color-primary-red); /* border-l-4 border-primary-red */
+            padding: 1.25rem 1.5rem; /* p-5 px-6 */
+            margin: 1.5rem 0; /* my-6 */
+            font-style: italic;
+            color: #4b5563; /* text-gray-700 */
+            border-radius: 0.375rem; /* rounded-lg */
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-100">
+
+    <header class="p-4 shadow-md">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center space-x-3 mb-4 md:mb-0">
+                <img src="../images/logo.png" alt="Logo Kota Tanjungpinang" class="w-16 h-16 object-contain">
+                <div class="text-lg font-bold text-center md:text-left">DINAS KOMUNIKASI DAN INFORMATIKA<br>KOTA TANJUNGPINANG</div>
+            </div>
+            <div class="social-icons flex space-x-4 mb-4 md:mb-0">
+                <a href="http://youtube.com/" class=""><i class="fab fa-youtube text-2xl"></i></a>
+                <a href="https://instagram.com/diskominfotanjungpinang" class=""><i class="fab fa-instagram text-2xl"></i></a>
+                <a href="https://facebook.com/KominfoTanjungpinang" class=""><i class="fab fa-facebook text-2xl"></i></a>
+                <a href="#" class=""><i class="fas fa-user text-2xl"></i></a>
+            </div>
+        </div>
+    </header>
+
+<nav class="bg-gray-800 text-white p-4 shadow-md relative z-10">
+    <div class="container mx-auto flex flex-col md:flex-row justify-center items-center">
+        <ul class="nav-menu flex flex-col md:flex-row gap-6 font-bold text-center md:text-left relative z-50 mb-4 md:mb-0">
+            <li><a href="../index.html" class="hover:text-blue-300 transition duration-300">BERANDA</a></li>
+
+            <li class="relative group">
+                <a href="#" class="hover:text-blue-300 flex items-center transition duration-300">
+                    PROFIL <i class="fas fa-chevron-down ml-2 text-xs"></i>
+                </a>
+                <ul class="absolute hidden group-hover:flex flex-col">
+                    <li><a href="visi.html" class="hover:bg-blue-600 rounded-t-md">Visi & Misi</a></li>
+                    <li><a href="struktur.html" class="hover:bg-blue-600">Struktur Organisasi</a></li>
+                    <li><a href="tupoksi.html" class="hover:bg-blue-600 rounded-b-md">Tupoksi</a></li>
+                </ul>
+            </li>
+
+            <li><a href="berita.html" class="hover:text-blue-300 transition duration-300">BERITA</a></li>
+            <li><a href="galeri.html" class="hover:text-blue-300 transition duration-300">GALERI</a></li>
+            <li><a href="artikel.html" class="hover:text-blue-300 transition duration-300">ARTIKEL</a></li>
+            <li><a href="pengumuman.html" class="hover:text-blue-300 transition duration-300">PENGUMUMAN</a></li>
+            <li><a href="kalender.html" class="hover:text-blue-300 transition duration-300">KALENDER</a></li>
+            <li><a href="download.html" class="hover:text-blue-300 transition duration-300">DOWNLOAD</a></li>
+            <li><a href="statistik.html" class="hover:text-blue-300 transition duration-300">STATISTIK</a></li>
+        </ul>
+    </div>
+</nav>
+
+    <div class="carousel-container">
+        <div class="carousel-header">
+            PENGUMUMAN
+        </div>
+        
+        <div class="search-announcement-bar">
+            <input 
+                type="text" 
+                id="searchAnnouncementInput"
+                placeholder="Cari pengumuman..." 
+            />
+            <button type="button" id="searchAnnouncementBtn">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+        
+         <!-- Hasil pencarian akan muncul di sini -->
+        <div id="searchResultsContainer" class="hidden bg-white p-4 border-t border-gray-200">
+            <h3 class="text-lg font-semibold mb-4">Hasil Pencarian</h3>
+            <div id="searchResultsList" class="space-y-4"></div>
+        </div>
+
+        <div class="carousel-wrapper">
+            <div class="carousel-track" id="carouselTrack">
+                <div class="carousel-slide">
+                    <div class="slide-image">
+                        <img src="https://via.placeholder.com/150x150/3498db/ffffff?text=Kegiatan+Sekolah" alt="Kegiatan Sekolah">
+                    </div>
+                    <div class="slide-content">
+                        <h3>Pengumuman Hasil Ujian Sekolah Menengah Pertama/Madrasah Tsanawiyah Negeri, Sekolah Menengah Pertama/Madrasah Tsanawiyah Swasta</h3>
+                        <ul>
+                            <li>Pengumuman Hasil Ujian Sekolah Menengah Pertama/Madrasah Tsanawiyah Negeri</li>
+                            <li>Laporan Hasil Ujian Akhir</li>
+                            <li>Laporan Hasil Ujian Nasional</li>
+                            <li>Laporan Hasil Ujian Tengah Semester</li>
+                            <li>Laporan Hasil Ujian Akhir Semester</li>
+                            <li>Laporan Hasil Ujian Kenaikan Kelas</li>
+                        </ul>
+                        <div class="slide-footer">
+                            <p><strong>Sumber:</strong> Dinas Pendidikan Sekolah Atas Boyolali</p>
+                            <p><strong>Tanggal:</strong> Selasa, 15 Januari 2025 | 08:00 - 10:00 WIB</p>
+                            <a href="#" class="date hover:underline">Selengkapnya</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-slide">
+                    <div class="slide-image">
+                        <img src="https://via.placeholder.com/150x150/e74c3c/ffffff?text=Ujian+Nasional" alt="Ujian Nasional">
+                    </div>
+                    <div class="slide-content">
+                        <h3>Pengumuman Jadwal Ujian Nasional dan Ujian Sekolah Tahun Pelajaran 2024/2025</h3>
+                        <ul>
+                            <li>Jadwal Ujian Nasional untuk SMP/MTs</li>
+                            <li>Jadwal Ujian Sekolah Berstandar Nasional</li>
+                            <li>Persyaratan dan Ketentuan Ujian</li>
+                            <li>Tata Tertib Pelaksanaan Ujian</li>
+                            <li>Lokasi dan Ruang Ujian</li>
+                            <li>Jadwal Pengumuman Hasil Ujian</li>
+                        </ul>
+                        <div class="slide-footer">
+                            <p><strong>Sumber:</strong> Dinas Pendidikan Sekolah Atas Boyolali</p>
+                            <p><strong>Tanggal:</strong> Rabu, 16 Januari 2025 | 09:00 - 11:00 WIB</p>
+                            <a href="#" class="date hover:underline">Selengkapnya</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-slide">
+                    <div class="slide-image">
+                        <img src="https://via.placeholder.com/150x150/27ae60/ffffff?text=Penerimaan+Siswa" alt="Penerimaan Siswa">
+                    </div>
+                    <div class="slide-content">
+                        <h3>Pengumuman Penerimaan Peserta Didik Baru (PPDB) Tahun Pelajaran 2025/2026</h3>
+                        <ul>
+                            <li>Persyaratan Pendaftaran PPDB</li>
+                            <li>Jadwal Pendaftaran dan Seleksi</li>
+                            <li>Sistem Zonasi dan Jalur Prestasi</li>
+                            <li>Dokumen yang Diperlukan</li>
+                            <li>Prosedur Pendaftaran Online</li>
+                            <li>Pengumuman Hasil Seleksi</li>
+                        </ul>
+                        <div class="slide-footer">
+                            <p><strong>Sumber:</strong> Dinas Pendidikan Sekolah Atas Boyolali</p>
+                            <p><strong>Tanggal:</strong> Kamis, 17 Januari 2025 | 10:00 - 12:00 WIB</p>
+                            <a href="#" class="date hover:underline">Selengkapnya</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-slide">
+                    <div class="slide-image">
+                        <img src="https://via.placeholder.com/150x150/9b59b6/ffffff?text=Kegiatan+Ekstrakurikuler" alt="Kegiatan Ekstrakurikuler">
+                    </div>
+                    <div class="slide-content">
+                        <h3>Pengumuman Kegiatan Ekstrakurikuler dan Olimpiade Sains Nasional</h3>
+                        <ul>
+                            <li>Pendaftaran Kegiatan Ekstrakurikuler</li>
+                            <li>Olimpiade Sains Nasional (OSN)</li>
+                            <li>Kompetisi Seni dan Budaya</li>
+                            <li>Kegiatan Olahraga dan Prestasi</li>
+                            <li>Program Pengembangan Bakat</li>
+                            <li>Jadwal Latihan dan Pembinaan</li>
+                        </ul>
+                        <div class="slide-footer">
+                            <p><strong>Sumber:</strong> Dinas Pendidikan Sekolah Atas Boyolali</p>
+                            <p><strong>Tanggal:</strong> Jumat, 18 Januari 2025 | 13:00 - 15:00 WIB</p>
+                            <a href="#" class="date hover:underline">Selengkapnya</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-slide">
+                    <div class="slide-image">
+                        <img src="https://via.placeholder.com/150x150/f39c12/ffffff?text=Beasiswa+Pendidikan" alt="Beasiswa Pendidikan">
+                    </div>
+                    <div class="slide-content">
+                        <h3>Pengumuman Program Beasiswa dan Bantuan Pendidikan Tahun 2025</h3>
+                        <ul>
+                            <li>Program Beasiswa Prestasi Akademik</li>
+                            <li>Bantuan Siswa Miskin (BSM)</li>
+                            <li>Kartu Indonesia Pintar (KIP)</li>
+                            <li>Beasiswa Olahraga dan Seni</li>
+                            <li>Persyaratan dan Cara Pendaftaran</li>
+                            <li>Jadwal Seleksi dan Pengumuman</li>
+                        </ul>
+                        <div class="slide-footer">
+                            <p><strong>Sumber:</strong> Dinas Pendidikan Sekolah Atas Boyolali</p>
+                            <p><strong>Tanggal:</strong> Sabtu, 19 Januari 2025 | 14:00 - 16:00 WIB</p>
+                            <a href="#" class="date hover:underline">Selengkapnya</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="carousel-nav prev" onclick="prevSlide()">‹</button>
+            <button class="carousel-nav next" onclick="nextSlide()">›</button>
+        </div>
+
+        <div class="carousel-indicators">
+            <span class="next-prev-text">Previous</span>
+            <button class="indicator active" onclick="goToSlide(0)">1</button>
+            <button class="indicator" onclick="goToSlide(1)">2</button>
+            <button class="indicator" onclick="goToSlide(2)">3</button>
+            <button class="indicator" onclick="goToSlide(3)">4</button>
+            <button class="indicator" onclick="goToSlide(4)">5</button>
+            <span class="next-prev-text">Next</span>
+        </div>
+    </div>
+
+   <footer class="bg-gray-800 text-white p-6 mt-10">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-start space-y-8 md:space-y-0 md:space-x-8">
+            <div class="footer-section flex flex-col items-center md:items-start text-center md:text-left w-full md:w-1/3">
+                <img src="../images/logo.png" alt="Logo Kota Tanjungpinang" class="w-20 h-20 object-contain mb-4">
+                <h3 class="text-xl font-bold mb-4">Hubungi Kami</h3>
+                <p class="text-sm mb-2"><i class="fas fa-map-marker-alt mr-2"></i> <strong>Alamat:</strong> Jl. Basuki Rahmat No. 4, Tanjungpinang, Kepulauan Riau, Indonesia 29124</p>
+                <p class="text-sm mb-2"><i class="fas fa-envelope mr-2"></i> <strong>Email:</strong> diskominfo@tanjungpinangkota.go.id</p>
+                <p class="text-sm"><i class="fas fa-phone-alt mr-2"></i> <strong>Telepon:</strong> (0771) 21694</p>
+            </div>
+
+            <div class="footer-section text-center md:text-left w-full md:w-1/3">
+                <h3 class="text-xl font-bold mb-4">Statistik Pengunjung</h3>
+                <div class="visitor-stats text-sm space-y-2">
+                    <div class="stat-item flex justify-between items-center p-2">
+                        <span class="flex items-center"><span class="status-indicator bg-green-500"></span>Online</span>
+                        <span id="visitorsOnline">1</span>
+                    </div>
+                    <div class="stat-item flex justify-between items-center p-2">
+                        <span class="flex items-center"><span class="status-indicator bg-yellow-500"></span>Hari ini</span>
+                        <span id="visitorsToday">45</span>
+                    </div>
+                    <div class="stat-item flex justify-between items-center p-2">
+                        <span class="flex items-center"><span class="status-indicator bg-blue-500"></span>Total</span>
+                        <span id="visitorsTotal">12,456</span>
+                    </div>
+                </div>
+                <button class="guest-book-btn mt-6 bg-primary-red text-white px-6 py-3 rounded-md hover:bg-red-700 transition duration-300 w-full">
+                    <i class="fas fa-book mr-2"></i> Isi Buku Tamu
+                </button>
+            </div>
+
+            <div class="footer-section text-center md:text-left w-full md:w-1/3">
+                <h3 class="text-xl font-bold mb-4">Berita Populer</h3>
+                <ul class="popular-news text-sm space-y-3">
+                    <li class="flex items-start p-2 hover:bg-gray-700 rounded transition duration-300">
+                        <div class="news-date text-primary-red font-semibold mr-3">15 Jan</div>
+                        <div>Pj. Wali Kota Beri Apresiasi pada Wajib Pajak</div>
+                    </li>
+                    <li class="flex items-start p-2 hover:bg-gray-700 rounded transition duration-300">
+                        <div class="news-date text-primary-red font-semibold mr-3">14 Jan</div>
+                        <div>Rapat Koordinasi Pembangunan Infrastruktur</div>
+                    </li>
+                    <li class="flex items-start p-2 hover:bg-gray-700 rounded transition duration-300">
+                        <div class="news-date text-primary-red font-semibold mr-3">13 Jan</div>
+                        <div>Peluncuran Program Smart City Tanjungpinang</div>
+                    </li>
+                    <li class="flex items-start p-2 hover:bg-gray-700 rounded transition duration-300">
+                        <div class="news-date text-primary-red font-semibold mr-3">12 Jan</div>
+                        <div>Sosialisasi Aplikasi Pelayanan Digital</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-400">
+            <p>© 2025 Dinas Komunikasi dan Informatika Kota Tanjungpinang_KP_UMRAH_TEKNIK INFORMATIKA ©</p>
+        </div>
+    </footer>
+
+   <script>
+        // Data pengumuman dalam bentuk array
+        const announcements = [
+            {
+                title: "Pengumuman Hasil Ujian Sekolah Menengah Pertama/Madrasah Tsanawiyah Negeri, Sekolah Menengah Pertama/Madrasah Tsanawiyah Swasta",
+                items: [
+                    "Pengumuman Hasil Ujian Sekolah Menengah Pertama/Madrasah Tsanawiyah Negeri",
+                    "Laporan Hasil Ujian Akhir",
+                    "Laporan Hasil Ujian Nasional",
+                    "Laporan Hasil Ujian Tengah Semester",
+                    "Laporan Hasil Ujian Akhir Semester",
+                    "Laporan Hasil Ujian Kenaikan Kelas"
+                ],
+                source: "Dinas Pendidikan Sekolah Atas Boyolali",
+                date: "Selasa, 15 Januari 2025 | 08:00 - 10:00 WIB",
+                image: "https://via.placeholder.com/150x150/3498db/ffffff?text=Kegiatan+Sekolah"
+            },
+            {
+                title: "Pengumuman Jadwal Ujian Nasional dan Ujian Sekolah Tahun Pelajaran 2024/2025",
+                items: [
+                    "Jadwal Ujian Nasional untuk SMP/MTs",
+                    "Jadwal Ujian Sekolah Berstandar Nasional",
+                    "Persyaratan dan Ketentuan Ujian",
+                    "Tata Tertib Pelaksanaan Ujian",
+                    "Lokasi dan Ruang Ujian",
+                    "Jadwal Pengumuman Hasil Ujian"
+                ],
+                source: "Dinas Pendidikan Sekolah Atas Boyolali",
+                date: "Rabu, 16 Januari 2025 | 09:00 - 11:00 WIB",
+                image: "https://via.placeholder.com/150x150/e74c3c/ffffff?text=Ujian+Nasional"
+            },
+            {
+                title: "Pengumuman Penerimaan Peserta Didik Baru (PPDB) Tahun Pelajaran 2025/2026",
+                items: [
+                    "Persyaratan Pendaftaran PPDB",
+                    "Jadwal Pendaftaran dan Seleksi",
+                    "Sistem Zonasi dan Jalur Prestasi",
+                    "Dokumen yang Diperlukan",
+                    "Prosedur Pendaftaran Online",
+                    "Pengumuman Hasil Seleksi"
+                ],
+                source: "Dinas Pendidikan Sekolah Atas Boyolali",
+                date: "Kamis, 17 Januari 2025 | 10:00 - 12:00 WIB",
+                image: "https://via.placeholder.com/150x150/27ae60/ffffff?text=Penerimaan+Siswa"
+            },
+            {
+                title: "Pengumuman Kegiatan Ekstrakurikuler dan Olimpiade Sains Nasional",
+                items: [
+                    "Pendaftaran Kegiatan Ekstrakurikuler",
+                    "Olimpiade Sains Nasional (OSN)",
+                    "Kompetisi Seni dan Budaya",
+                    "Kegiatan Olahraga dan Prestasi",
+                    "Program Pengembangan Bakat",
+                    "Jadwal Latihan dan Pembinaan"
+                ],
+                source: "Dinas Pendidikan Sekolah Atas Boyolali",
+                date: "Jumat, 18 Januari 2025 | 13:00 - 15:00 WIB",
+                image: "https://via.placeholder.com/150x150/9b59b6/ffffff?text=Kegiatan+Ekstrakurikuler"
+            },
+            {
+                title: "Pengumuman Program Beasiswa dan Bantuan Pendidikan Tahun 2025",
+                items: [
+                    "Program Beasiswa Prestasi Akademik",
+                    "Bantuan Siswa Miskin (BSM)",
+                    "Kartu Indonesia Pintar (KIP)",
+                    "Beasiswa Olahraga dan Seni",
+                    "Persyaratan dan Cara Pendaftaran",
+                    "Jadwal Seleksi dan Pengumuman"
+                ],
+                source: "Dinas Pendidikan Sekolah Atas Boyolali",
+                date: "Sabtu, 19 Januari 2025 | 14:00 - 16:00 WIB",
+                image: "https://via.placeholder.com/150x150/f39c12/ffffff?text=Beasiswa+Pendidikan"
+            }
+        ];
+
+        // Fungsi untuk mencari pengumuman
+        function searchAnnouncements(keyword) {
+            const resultsContainer = document.getElementById('searchResultsContainer');
+            const resultsList = document.getElementById('searchResultsList');
+            
+            // Kosongkan hasil pencarian sebelumnya
+            resultsList.innerHTML = '';
+            
+            // Jika keyword kosong, sembunyikan container hasil
+            if (!keyword.trim()) {
+                resultsContainer.classList.add('hidden');
+                return;
+            }
+            
+            const lowerKeyword = keyword.toLowerCase();
+            let foundResults = false;
+            
+            // Cari di setiap pengumuman
+            announcements.forEach(announcement => {
+                // Cek di judul
+                const titleMatch = announcement.title.toLowerCase().includes(lowerKeyword);
+                
+                // Cek di setiap item
+                const itemsMatch = announcement.items.some(item => 
+                    item.toLowerCase().includes(lowerKeyword)
+                );
+                
+                // Cek di sumber atau tanggal
+                const sourceMatch = announcement.source.toLowerCase().includes(lowerKeyword);
+                const dateMatch = announcement.date.toLowerCase().includes(lowerKeyword);
+                
+                // Jika ada yang cocok
+                if (titleMatch || itemsMatch || sourceMatch || dateMatch) {
+                    foundResults = true;
+                    
+                    // Buat elemen hasil
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer';
+                    resultItem.innerHTML = `
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 mr-4">
+                                <img src="${announcement.image}" alt="${announcement.title}" class="w-16 h-16 object-cover rounded">
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-blue-600">${announcement.title}</h4>
+                                <p class="text-sm text-gray-600 mt-1"><strong>Sumber:</strong> ${announcement.source}</p>
+                                <p class="text-sm text-gray-600"><strong>Tanggal:</strong> ${announcement.date}</p>
+                                <div class="mt-2">
+                                    ${announcement.items.slice(0, 3).map(item => `
+                                        <p class="text-sm text-gray-700">• ${highlightKeyword(item, keyword)}</p>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Tambahkan event click untuk menuju ke slide yang sesuai
+                    resultItem.addEventListener('click', () => {
+                        const index = announcements.indexOf(announcement);
+                        goToSlide(index);
+                        resultsContainer.classList.add('hidden');
+                    });
+                    
+                    resultsList.appendChild(resultItem);
+                }
+            });
+            
+            // Jika tidak ada hasil
+            if (!foundResults) {
+                resultsList.innerHTML = `
+                    <div class="p-4 text-center text-gray-500">
+                        Tidak ditemukan pengumuman yang sesuai dengan kata kunci "${keyword}"
+                    </div>
+                `;
+            }
+            
+            // Tampilkan container hasil
+            resultsContainer.classList.remove('hidden');
+        }
+        
+        // Fungsi untuk menyorot keyword di teks
+        function highlightKeyword(text, keyword) {
+            if (!keyword.trim()) return text;
+            
+            const regex = new RegExp(`(${keyword})`, 'gi');
+            return text.replace(regex, '<span class="bg-yellow-200">$1</span>');
+        }
+        
+        // Event listener untuk tombol pencarian
+        document.getElementById('searchAnnouncementBtn').addEventListener('click', () => {
+            const keyword = document.getElementById('searchAnnouncementInput').value;
+            searchAnnouncements(keyword);
+        });
+        
+        // Event listener untuk input enter
+        document.getElementById('searchAnnouncementInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const keyword = document.getElementById('searchAnnouncementInput').value;
+                searchAnnouncements(keyword);
+            }
+        });
+    </script>
+</body>
+</html>

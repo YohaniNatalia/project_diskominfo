@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dinas Komunikasi dan Informatika Kota Tanjungpinang</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --color-primary-red: #e64848;
+            --color-dark-top-bar: #222222;
+            --color-search-btn: #3B82F6;
+        }
+
+        .bg-primary-red {
+            background-color: var(--color-primary-red);
+        }
+          /* --- PERBAIKAN PENTING UNTUK DROPDOWN PROFIL --- */
+        .nav-menu .group {
+            position: relative; /* Ini sangat penting! Membuat elemen induk menjadi relatif agar dropdown absolutnya berpatokan padanya. */
+            /* Tambahan: Pastikan tidak ada overflow: hidden; atau transform pada elemen ini atau induknya di atasnya */
+        }
+
+        .nav-menu .group ul { /* Menargetkan elemen UL (dropdown) di dalam LI dengan class .group */
+            display: none; /* Sembunyikan secara default */
+            position: absolute; /* Posisikan secara absolut agar melayang di atas konten lain */
+            top: 100%; /* Tempatkan tepat di bawah item menu utama */
+            left: 0; /* Mulai dari sisi kiri item menu utama */
+            min-width: 12rem; /* Pastikan ada lebar minimum yang cukup agar teks tidak terpotong */
+            background-color: var(--color-primary-red); /* Warna background dropdown */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Tambahkan bayangan untuk visual yang lebih baik */
+            border-radius: 0.375rem; /* Sudut membulat */
+            z-index: 9999; /* Tingkatkan z-index ke nilai yang sangat tinggi untuk memastikan di atas elemen lain */
+            flex-direction: column; /* Atur item dropdown agar tersusun vertikal */
+            
+            /* Transisi untuk efek muncul/sembunyi yang halus (opsional, tapi disarankan) */
+            opacity: 0;
+            transform: translateY(5px); /* Sedikit bergeser ke bawah saat muncul */
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+            pointer-events: none; /* Nonaktifkan interaksi saat dropdown tersembunyi */
+        }
+
+        /* Tampilkan dropdown saat elemen LI dengan class .group di-hover */
+        .nav-menu .group:hover > ul {
+            display: flex !important; /* Paksa display flex. !important digunakan untuk mengatasi potensi prioritas CSS Tailwind lainnya. */
+            opacity: 1; /* Transisi opacity ke 1 (penuh terlihat) */
+            transform: translateY(0); /* Kembali ke posisi aslinya */
+            pointer-events: auto; /* Aktifkan interaksi mouse saat dropdown terlihat */
+        }
+
+        /* Gaya untuk link di dalam dropdown (Visi & Misi, Struktur, Tupoksi) */
+        .nav-menu .group ul li a {
+            padding: 0.75rem 1rem; /* Padding lebih nyaman untuk area klik */
+            display: block; /* Pastikan link mengisi seluruh lebar item */
+            white-space: nowrap; /* Mencegah teks patah baris */
+            color: white; /* Warna teks di dalam dropdown */
+            transition: background-color 0.2s ease; /* Transisi warna background saat hover */
+        }
+
+        .nav-menu .group ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.2); /* Warna background saat hover di item dropdown */
+            color: white; /* Pastikan teks tetap putih saat hover */
+        }
+        /* --- AKHIR PERBAIKAN DROPDOWN PROFIL --- */
+
+
+        /* Styling untuk card grafik - Diperkecil */
+        .chart-card {
+            background-color: #fff;
+            border-radius: 6px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+        }
+
+        /* Ukuran canvas grafik diperkecil */
+        .chart-container {
+            height: 250px !important;
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+        }
+
+        /* Judul grafik diperkecil */
+        .chart-header h2, .line-chart-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        /* Modal dan konfirmasi */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 50;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 16px;
+            border-radius: 6px;
+            width: 280px;
+            text-align: center;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body class="font-sans bg-gray-100" style="font-size: 14px;">
+
+    <!-- Header tetap sama -->
+    <header class="bg-primary-red text-white py-3 px-4 shadow-md relative z-20">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center space-x-3 mb-3 md:mb-0">
+                <img src="../images/logo.png" alt="Logo Kota Tanjungpinang" class="w-12 h-12 object-contain">
+                <div class="text-lg font-bold text-center md:text-left">
+                    <div>DINAS KOMUNIKASI DAN INFORMATIKA</div>
+                    <div>KOTA TANJUNGPINANG</div>
+                </div>
+            </div>
+            <div class="flex space-x-3">
+                <a href="http://youtube.com/" class="hover:text-gray-300"><i class="fab fa-youtube text-lg"></i></a>
+                <a href="https://instagram.com/diskominfotanjungpinang" class="hover:text-gray-300"><i class="fab fa-instagram text-lg"></i></a>
+                <a href="https://facebook.com/KominfoTanjungpinang" class="hover:text-gray-300"><i class="fab fa-facebook text-lg"></i></a>
+                <a href="#" class="text-white"><i class="fas fa-user text-xl"></i></a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navbar tetap sama -->
+    
+  <nav class="bg-gray-800 text-white p-4 shadow-md relative z-10">
+    <div class="container mx-auto flex flex-col md:flex-row justify-center items-center">
+        <ul class="nav-menu flex flex-col md:flex-row gap-6 font-bold text-center md:text-left relative z-50 mb-4 md:mb-0">
+            <li><a href="../index.html" class="hover:text-blue-300 transition duration-300">BERANDA</a></li>
+
+            <li class="relative group">
+                <a href="#" class="hover:text-blue-300 flex items-center transition duration-300">
+                    PROFIL <i class="fas fa-chevron-down ml-2 text-xs"></i>
+                </a>
+                <ul class="absolute hidden group-hover:flex flex-col">
+                    <li><a href="visi.html" class="hover:bg-blue-600 rounded-t-md">Visi & Misi</a></li>
+                    <li><a href="struktur.html" class="hover:bg-blue-600">Struktur Organisasi</a></li>
+                    <li><a href="tupoksi.html" class="hover:bg-blue-600 rounded-b-md">Tupoksi</a></li>
+                </ul>
+            </li>
+
+            <li><a href="berita.html" class="hover:text-blue-300 transition duration-300">BERITA</a></li>
+            <li><a href="galeri.html" class="hover:text-blue-300 transition duration-300">GALERI</a></li>
+            <li><a href="artikel.html" class="hover:text-blue-300 transition duration-300">ARTIKEL</a></li>
+            <li><a href="pengumuman.html" class="hover:text-blue-300 transition duration-300">PENGUMUMAN</a></li>
+            <li><a href="kalender.html" class="hover:text-blue-300 transition duration-300">KALENDER</a></li>
+            <li><a href="download.html" class="hover:text-blue-300 transition duration-300">DOWNLOAD</a></li>
+            <li><a href="statistik.html" class="hover:text-blue-300 transition duration-300">STATISTIK</a></li>
+        </ul>
+    </div>
+</nav>
+    <!-- Main Content - Diperkecil -->
+    <div class="main-container py-4 px-2">
+        <h1 class="main-title text-center font-bold mb-4" style="font-size: 18px;">STATISTIK</h1>
+
+        <div class="chart-card">
+            <div class="chart-header">
+                <h2>Diskominfo Kota Tanjungpinang: Komitmen Satu Data Indonesia</h2>
+            </div>
+            <div class="chart-container">
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h2 class="line-chart-title">Indeks SPBE Kota Tanjungpinang Tahun 2021 s/d 2024</h2>
+            <div class="chart-container">
+                <canvas id="lineChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer diperkecil -->
+    <footer class="bg-gray-800 text-white p-6 mt-10">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-start space-y-8 md:space-y-0 md:space-x-8">
+            <div class="footer-section flex flex-col items-center md:items-start text-center md:text-left w-full md:w-1/3">
+                <img src="../images/logo.png" alt="Logo Kota Tanjungpinang" class="w-20 h-20 object-contain mb-4">
+                <h3 class="text-xl font-bold mb-4">Hubungi Kami</h3>
+                <p class="text-sm mb-2"><i class="fas fa-map-marker-alt mr-2"></i> <strong>Alamat:</strong> Jl. Basuki Rahmat No. 4, Tanjungpinang, Kepulauan Riau, Indonesia 29124</p>
+                <p class="text-sm mb-2"><i class="fas fa-envelope mr-2"></i> <strong>Email:</strong> diskominfo@tanjungpinangkota.go.id</p>
+                <p class="text-sm"><i class="fas fa-phone-alt mr-2"></i> <strong>Telepon:</strong> (0771) 21694</p>
+            </div>
+
+            <div class="footer-section text-center md:text-left w-full md:w-1/3">
+                <h3 class="text-xl font-bold mb-4">Statistik Pengunjung</h3>
+                <div class="visitor-stats text-sm space-y-2">
+                    <div class="stat-item flex justify-between items-center p-2">
+                        <span class="flex items-center"><span class="status-indicator bg-green-500"></span>Online</span>
+                        <span id="visitorsOnline">1</span>
+                    </div>
+                    <div class="stat-item flex justify-between items-center p-2">
+                        <span class="flex items-center"><span class="status-indicator bg-yellow-500"></span>Hari ini</span>
+                        <span id="visitorsToday">45</span>
+                    </div>
+                    <div class="stat-item flex justify-between items-center p-2">
+                        <span class="flex items-center"><span class="status-indicator bg-blue-500"></span>Total</span>
+                        <span id="visitorsTotal">12,456</span>
+                    </div>
+                </div>
+                <button class="guest-book-btn mt-6 bg-primary-red text-white px-6 py-3 rounded-md hover:bg-red-700 transition duration-300 w-full">
+                    <i class="fas fa-book mr-2"></i> Isi Buku Tamu
+                </button>
+            </div>
+
+            <div class="footer-section text-center md:text-left w-full md:w-1/3">
+                <h3 class="text-xl font-bold mb-4">Berita Populer</h3>
+                <ul class="popular-news text-sm space-y-3">
+                    <li class="flex items-start p-2 hover:bg-gray-700 rounded transition duration-300">
+                        <div class="news-date text-primary-red font-semibold mr-3">15 Jan</div>
+                        <div>Pj. Wali Kota Beri Apresiasi pada Wajib Pajak</div>
+                    </li>
+                    <li class="flex items-start p-2 hover:bg-gray-700 rounded transition duration-300">
+                        <div class="news-date text-primary-red font-semibold mr-3">14 Jan</div>
+                        <div>Rapat Koordinasi Pembangunan Infrastruktur</div>
+                    </li>
+                    <li class="flex items-start p-2 hover:bg-gray-700 rounded transition duration-300">
+                        <div class="news-date text-primary-red font-semibold mr-3">13 Jan</div>
+                        <div>Peluncuran Program Smart City Tanjungpinang</div>
+                    </li>
+                    <li class="flex items-start p-2 hover:bg-gray-700 rounded transition duration-300">
+                        <div class="news-date text-primary-red font-semibold mr-3">12 Jan</div>
+                        <div>Sosialisasi Aplikasi Pelayanan Digital</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-400">
+            <p>© 2025 Dinas Komunikasi dan Informatika Kota Tanjungpinang_KP_UMRAH_TEKNIK INFORMATIKA ©</p>
+        </div>
+    </footer>
+
+    <script>
+        // JavaScript untuk Membuat Grafik dengan Chart.js - Diperkecil
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DATA & KONFIGURASI GRAFIK BATANG ---
+            const barChartCanvas = document.getElementById('barChart');
+            new Chart(barChartCanvas, {
+                type: 'bar',
+                data: {
+                    labels: ['Jumlah Gudang', 'Jumlah Minimarket/Swalayan', 'Jumlah Industri Kecil', 'Jumlah Publik Hotspot'],
+                    datasets: [
+                        {
+                            label: '2021',
+                            data: [3, 4, 110, 3],
+                            backgroundColor: '#FF5733',
+                            borderColor: '#FF5733',
+                            borderWidth: 1,
+                            borderRadius: 2,
+                            barThickness: 15
+                        },
+                        {
+                            label: '2022',
+                            data: [4, 9, 130, 5],
+                            backgroundColor: '#33C1FF',
+                            borderColor: '#33C1FF',
+                            borderWidth: 1,
+                            borderRadius: 2,
+                            barThickness: 15
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 140,
+                            grid: {
+                                color: '#e9ecef'
+                            },
+                            ticks: {
+                                font: {
+                                    size: 10
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 10
+                                },
+                                autoSkip: true,
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 11,
+                                    weight: 'bold'
+                                },
+                                boxWidth: 12
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#000',
+                            titleFont: {
+                                size: 11,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 11
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    return `Data ${context.dataset.label}: Nilai ${context.formattedValue}`;
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeInOutQuart'
+                    }
+                }
+            });
+
+            // --- DATA & KONFIGURASI GRAFIK GARIS ---
+            const lineChartCanvas = document.getElementById('lineChart');
+            new Chart(lineChartCanvas, {
+                type: 'line',
+                data: {
+                    labels: ['2021', '2022', '2023', '2024'],
+                    datasets: [{
+                        label: 'Indeks SPBE',
+                        data: [2.3, 1.8, 2.8, 3.2],
+                        fill: false,
+                        borderColor: '#FF5733',
+                        backgroundColor: '#FF5733',
+                        borderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 3.5,
+                            grid: {
+                                color: '#e9ecef'
+                            },
+                            ticks: {
+                                font: {
+                                    size: 10
+                                }
+                            }
+                        },
+                         x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 10
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                             labels: {
+                                font: {
+                                    size: 11,
+                                    weight: 'bold'
+                                },
+                                boxWidth: 12
+                            }
+                        },
+                         tooltip: {
+                            backgroundColor: '#000',
+                            titleFont: {
+                                size: 11,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 11
+                            },
+                        }
+                    },
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeInOutQuad'
+                    }
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
