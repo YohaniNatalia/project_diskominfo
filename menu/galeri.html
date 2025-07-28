@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeri - Diskominfo Kota Tanjungpinang</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary-red: #e64848;
+            --navbar-bg: #2D3748;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .bg-primary-red { background-color: var(--color-primary-red ); }
+        .text-primary-red { color: var(--color-primary-red); }
+        nav { background-color: var(--navbar-bg); }
+
+        /* --- Navigasi & Dropdown --- */
+        .nav-menu .group { position: relative; }
+        .nav-menu .group ul {
+            display: none; position: absolute; top: 100%; left: 0; min-width: 12rem;
+            background-color: var(--color-primary-red); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            border-radius: 0.375rem; z-index: 9999; opacity: 0; transform: translateY(10px);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out; pointer-events: none;
+        }
+        .nav-menu .group:hover > ul {
+            display: flex !important; opacity: 1; transform: translateY(0); pointer-events: auto;
+        }
+        .nav-menu .group ul li a {
+            padding: 0.75rem 1rem; display: block; white-space: nowrap; color: white;
+            transition: background-color 0.2s ease;
+        }
+        .nav-menu .group ul li a:hover { background-color: rgba(255, 255, 255, 0.2); }
+
+        /* --- Desain Baru untuk Kartu Foto & Album --- */
+        .photo-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .photo-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.15);
+        }
+        .photo-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        .photo-card:hover img {
+            transform: scale(1.1);
+        }
+        .photo-card .overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+            color: white;
+            padding: 1.5rem;
+            transform: translateY(30%);
+            opacity: 0;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+        .photo-card:hover .overlay {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .photo-card .overlay .photo-title {
+            font-weight: 700;
+            font-size: 1.25rem;
+            line-height: 1.2;
+        }
+        .photo-card .overlay .photo-date {
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+        .album-card .album-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        .album-card .album-meta {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        .album-card .album-count {
+            color: var(--color-primary-red);
+            font-weight: 600;
+        }
+
+        /* --- Lightbox (Pop-up Foto) --- */
+        .lightbox-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.85); z-index: 1000;
+            justify-content: center; align-items: center; cursor: pointer;
+            backdrop-filter: blur(5px);
+        }
+        .lightbox-content {
+            position: relative; max-width: 90%; max-height: 90%;
+            background-color: #fff; padding: 1.5rem; border-radius: 0.75rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: fadeInScale 0.3s ease-out;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .lightbox-content img {
+            max-width: 100%; max-height: 70vh; object-fit: contain;
+            border-radius: 0.5rem; margin-bottom: 1rem;
+        }
+        .lightbox-close {
+            position: absolute; top: 1rem; right: 1.5rem; color: #fff;
+            font-size: 2.5rem; cursor: pointer; transition: color 0.2s ease; z-index: 1001;
+        }
+        .lightbox-close:hover { color: var(--color-primary-red); }
+        .lightbox-nav-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5); color: white;
+            padding: 0.75rem 0.5rem; border-radius: 0.375rem; cursor: pointer;
+            z-index: 1002; font-size: 1.5rem; transition: background-color 0.2s ease;
+        }
+        .lightbox-nav-btn:hover { background-color: rgba(0, 0, 0, 0.7); }
+        .lightbox-prev { left: 1rem; }
+        .lightbox-next { right: 1rem; }
+        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+        /* ========== CSS UNTUK ANIMASI & TOMBOL ========== */
+        .animate-on-scroll { 
+            opacity: 0; 
+            transform: translateY(40px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out; 
+        }
+        .animate-on-scroll.is-visible { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+        #back-to-top-btn {
+            display: none; position: fixed; bottom: 30px; right: 30px; z-index: 1001;
+            background-color: var(--color-primary-red); color: white; border: none;
+            cursor: pointer; padding: 15px; border-radius: 50%; width: 55px; height: 55px;
+            font-size: 20px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        #back-to-top-btn:hover {
+            background-color: #c53030; transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Elemen HTML untuk tombol diletakkan di sini, setelah <body> -->
+    <button id="back-to-top-btn" title="Kembali ke atas">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <header id="page-top" class="bg-primary-red text-white py-4 px-4 shadow-md relative z-20">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center space-x-4 mb-4 md:mb-0">
+                <img src="../images/logo.png" alt="Logo Kota Tanjungpinang" class="w-16 h-16 object-contain">
+                <div class="text-lg font-bold text-center md:text-left">
+                    <div>DINAS KOMUNIKASI DAN INFORMATIKA</div>
+                    <div>KOTA TANJUNGPINANG</div>
+                </div>
+            </div>
+            <div class="social-icons flex space-x-4 mb-4 md:mb-0">
+                <a href="https://youtube.com/DiskominfoKotaTanjungpinang" class="text-white hover:text-gray-300"><i class="fab fa-youtube text-2xl"></i></a>
+                <a href="https://instagram.com/diskominfotanjungpinang" class="text-white hover:text-gray-300"><i class="fab fa-instagram text-2xl"></i></a>
+                <a href="https://facebook.com/KominfoTanjungpinang" class="text-white hover:text-gray-300"><i class="fab fa-facebook text-2xl"></i></a>
+                <a href="#" class="text-white hover:text-gray-300"><i class="fas fa-user text-2xl"></i></a>
+            </div>
+        </div>
+    </header>
+
+    <nav class="bg-gray-800 text-white p-4 shadow-md sticky top-0 z-50">
+        <div class="container mx-auto flex flex-col md:flex-row justify-center items-center">
+            <ul class="nav-menu flex flex-col md:flex-row gap-6 font-bold text-center md:text-left">
+                <li><a href="../index.html" class="hover:text-blue-300 transition duration-300">BERANDA</a></li>
+                <li class="group">
+                    <a href="#" class="hover:text-blue-300 flex items-center transition duration-300">
+                        PROFIL <i class="fas fa-chevron-down ml-2 text-xs"></i>
+                    </a>
+                    <ul class="group-hover:flex flex-col">
+                        <li><a href="visi.html" class="hover:bg-blue-600 rounded-t-md">Visi & Misi</a></li>
+                        <li><a href="struktur.html" class="hover:bg-blue-600">Struktur Organisasi</a></li>
+                        <li><a href="tupoksi.html" class="hover:bg-blue-600 rounded-b-md">Tupoksi</a></li>
+                    </ul>
+                </li>
+                <li><a href="berita.html" class="hover:text-blue-300 transition duration-300">BERITA</a></li>
+                <li><a href="galeri.html" class="hover:text-blue-300 transition duration-300">GALERI</a></li>
+                <li><a href="artikel.html" class="hover:text-blue-300 transition duration-300">ARTIKEL</a></li>
+                <li><a href="pengumuman.html" class="hover:text-blue-300 transition duration-300">PENGUMUMAN</a></li>
+                <li><a href="kalender.html" class="hover:text-blue-300 transition duration-300">KALENDER</a></li>
+                <li><a href="download.html" class="hover:text-blue-300 transition duration-300">DOWNLOAD</a></li>
+                <li><a href="statistik.html" class="hover:text-blue-300 transition duration-300">STATISTIK</a></li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <main class="container mx-auto mt-8 mb-16 px-4">
+        <section class="py-12">
+            <div class="text-center mb-12 animate-on-scroll">
+                <h1 class="text-4xl font-bold text-gray-800">Galeri Kegiatan</h1>
+            </div>
+
+            <div class="mb-16">
+                <h2 class="text-3xl font-bold text-primary-red mb-8 animate-on-scroll">Foto Terbaru</h2>
+                <div id="individual-photos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <a href="#" class="photo-card animate-on-scroll" data-src="../images/iya 1.png" data-title="Suasana Rapat Dinas Bulan Mei" data-date="10 Mei 2025" onclick="openLightbox(this, 'single' ); return false;">
+                        <img src="../images/iya 1.png" alt="Suasana Rapat Dinas">
+                        <div class="overlay">
+                            <h3 class="photo-title">Suasana Rapat Dinas Bulan Mei</h3>
+                            <p class="photo-date">10 Mei 2025</p>
+                        </div>
+                    </a>
+                    <a href="#" class="photo-card animate-on-scroll" data-src="../images/iya 1.png" data-title="Penyerahan Bantuan Sosial" data-date="03 Mei 2025" onclick="openLightbox(this, 'single'); return false;">
+                        <img src="../images/iya 1.png" alt="Penyerahan Bantuan Sosial">
+                        <div class="overlay">
+                            <h3 class="photo-title">Penyerahan Bantuan Sosial</h3>
+                            <p class="photo-date">03 Mei 2025</p>
+                        </div>
+                    </a>
+                    <a href="#" class="photo-card animate-on-scroll" data-src="../images/iya 1.png" data-title="Peresmian Gedung Pelayanan Publik" data-date="25 April 2025" onclick="openLightbox(this, 'single'); return false;">
+                        <img src="../images/iya 1.png" alt="Peresmian Gedung Baru">
+                        <div class="overlay">
+                            <h3 class="photo-title">Peresmian Gedung Pelayanan Publik</h3>
+                            <p class="photo-date">25 April 2025</p>
+                        </div>
+                    </a>
+                    <a href="#" class="photo-card animate-on-scroll" data-src="../images/iya 1.png" data-title="Workshop Digitalisasi Administrasi" data-date="18 April 2025" onclick="openLightbox(this, 'single'); return false;">
+                        <img src="../images/iya 1.png" alt="Workshop Digitalisasi">
+                        <div class="overlay">
+                            <h3 class="photo-title">Workshop Digitalisasi Administrasi</h3>
+                            <p class="photo-date">18 April 2025</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                <h2 class="text-3xl font-bold text-primary-red mb-8 animate-on-scroll">Album Kegiatan</h2>
+                <div id="album-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden animate-on-scroll">
+                        <a href="#" class="block" onclick="openLightbox(this, 'album'); return false;" data-photos='[{"src": "../images/iya 1.png", "title": "Apel Pagi (1)", "date": "15 Mei 2025"}, {"src": "../images/album_apel_2.jpg", "title": "Apel Pagi (2)", "date": "15 Mei 2025"}]'>
+                            <img src="../images/iya 1.png" alt="Sampul Album Apel Pagi" class="w-full h-56 object-cover hover:opacity-90 transition">
+                        </a>
+                        <div class="p-6">
+                            <h3 class="album-title">Apel Pagi Pegawai</h3>
+                            <p class="text-gray-600 mt-2 mb-4">Kumpulan momen apel pagi rutin dan kegiatan internal dinas.</p>
+                            <div class="album-meta flex justify-between items-center border-t pt-4">
+                                <span><i class="fas fa-calendar-alt mr-2"></i>15 Mei 2025</span>
+                                <span class="album-count"><i class="fas fa-images mr-2"></i>2 Foto</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden animate-on-scroll">
+                        <a href="#" class="block" onclick="openLightbox(this, 'album'); return false;" data-photos='[{"src": "../images/logo.png", "title": "Rakor Smart City (1)", "date": "10 April 2025"}, {"src": "../images/album_rakor_2.jpg", "title": "Rakor Smart City (2)", "date": "10 April 2025"}]'>
+                            <img src="../images/iya 1.png" alt="Sampul Album Rakor Smart City" class="w-full h-56 object-cover hover:opacity-90 transition">
+                        </a>
+                        <div class="p-6">
+                            <h3 class="album-title">Rakor Program Smart City</h3>
+                            <p class="text-gray-600 mt-2 mb-4">Dokumentasi rapat strategis dan pengembangan kota cerdas.</p>
+                            <div class="album-meta flex justify-between items-center border-t pt-4">
+                                <span><i class="fas fa-calendar-alt mr-2"></i>10 April 2025</span>
+                                <span class="album-count"><i class="fas fa-images mr-2"></i>2 Foto</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden animate-on-scroll">
+                        <a href="#" class="block" onclick="openLightbox(this, 'album'); return false;" data-photos='[{"src": "../images/album_kunjungan_1.jpg", "title": "Kunjungan Kerja (1)", "date": "28 Maret 2025"}, {"src": "../images/album_kunjungan_2.jpg", "title": "Kunjungan Kerja (2)", "date": "28 Maret 2025"}]'>
+                            <img src="../images/iya 1.png" alt="Sampul Album Kunjungan Kerja" class="w-full h-56 object-cover hover:opacity-90 transition">
+                        </a>
+                        <div class="p-6">
+                            <h3 class="album-title">Kunjungan Kerja</h3>
+                            <p class="text-gray-600 mt-2 mb-4">Galeri foto dari kunjungan resmi dan studi banding ke berbagai instansi.</p>
+                            <div class="album-meta flex justify-between items-center border-t pt-4">
+                                <span><i class="fas fa-calendar-alt mr-2"></i>28 Maret 2025</span>
+                                <span class="album-count"><i class="fas fa-images mr-2"></i>2 Foto</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white p-6 mt-10">
+        <!-- Footer content sama seperti halaman lain -->
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-start space-y-8 md:space-y-0 md:space-x-8">
+            <div class="footer-section flex flex-col items-center md:items-start text-center md:text-left w-full md:w-1/3">
+                <img src="../images/logo.png" alt="Logo Kota Tanjungpinang" class="w-20 h-20 object-contain mb-4">
+                <h3 class="text-xl font-bold mb-4">Hubungi Kami</h3>
+                <p class="text-sm mb-2"><strong>Alamat:</strong>  
+Jl. Basuki Rahmat No. 4  
+Tanjungpinang, Kepulauan Riau  
+Indonesia 29124</p>
+                <p class="text-sm mb-2"><strong>Email:</strong> diskominfo@tanjungpinangkota.go.id</p>
+                <p class="text-sm"><strong>Telepon:</strong> (0771) 21694</p>
+            </div>
+            <div class="footer-section text-center md:text-left w-full md:w-1/3">
+                <h3 class="text-xl font-bold mb-4">Statistik Pengunjung</h3>
+                <div class="visitor-stats text-sm space-y-2">
+                    <div class="stat-item flex justify-between items-center bg-gray-700 p-2 rounded">
+                        <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-green-500 mr-2"></span>Online</span>
+                        <span>1</span>
+                    </div>
+                    <div class="stat-item flex justify-between items-center bg-gray-700 p-2 rounded">
+                        <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-yellow-500 mr-2"></span>Hari ini</span>
+                        <span>45</span>
+                    </div>
+                    <div class="stat-item flex justify-between items-center bg-gray-700 p-2 rounded">
+                        <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-blue-500 mr-2"></span>Total</span>
+                        <span>12,456</span>
+                    </div>
+                </div>
+                <button class="guest-book-btn mt-6 bg-primary-red text-white px-6 py-3 rounded-md hover:bg-red-700 transition duration-300 w-full">Isi Buku Tamu</button>
+            </div>
+            <div class="footer-section text-center md:text-left w-full md:w-1/3">
+                <h3 class="text-xl font-bold mb-4">Berita Populer</h3>
+                <ul class="popular-news text-sm space-y-3">
+                    <li class="flex items-start bg-gray-700 p-2 rounded">
+                        <div class="news-date text-primary-red font-semibold mr-3">15 Jan 2025</div>
+                        <div>Pj. Wali Kota Beri Apresiasi pada Wajib Pajak</div>
+                    </li>
+                    <li class="flex items-start bg-gray-700 p-2 rounded">
+                        <div class="news-date text-primary-red font-semibold mr-3">14 Jan 2025</div>
+                        <div>Rapat Koordinasi Pembangunan Infrastruktur</div>
+                    </li>
+                    <li class="flex items-start bg-gray-700 p-2 rounded">
+                        <div class="news-date text-primary-red font-semibold mr-3">13 Jan 2025</div>
+                        <div>Peluncuran Program Smart City Tanjungpinang</div>
+                    </li>
+                    <li class="flex items-start bg-gray-700 p-2 rounded">
+                        <div class="news-date text-primary-red font-semibold mr-3">12 Jan 2025</div>
+                        <div>Sosialisasi Aplikasi Pelayanan Digital</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-400">
+            <p>© 2025 Dinas Komunikasi dan Informatika Kota Tanjungpinang_KP_UMRAH_TEKNIK INFORMATIKA ©</p>
+        </div>
+    </footer>
+
+    <div id="lightbox-overlay" class="lightbox-overlay">
+        <span class="lightbox-close">&times;</span>
+        <div class="lightbox-content">
+            <img id="lightbox-image" src="" alt="Gambar Galeri">
+            <div class="title-date text-center mt-4">
+                <h3 id="lightbox-title" class="text-xl font-bold text-gray-800"></h3>
+                <p id="lightbox-date" class="text-sm text-gray-500"></p>
+            </div>
+            <div id="lightbox-nav" class="hidden">
+                <button class="lightbox-nav-btn lightbox-prev"><i class="fas fa-chevron-left"></i></button>
+                <button class="lightbox-nav-btn lightbox-next"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        // --- LIGHTBOX SCRIPT ---
+        const lightboxOverlay = document.getElementById('lightbox-overlay');
+        const lightboxImage = document.getElementById('lightbox-image');
+        const lightboxTitle = document.getElementById('lightbox-title');
+        const lightboxDate = document.getElementById('lightbox-date');
+        const lightboxNav = document.getElementById('lightbox-nav');
+        const lightboxCloseBtn = document.querySelector('.lightbox-close');
+        const lightboxPrevBtn = document.querySelector('.lightbox-prev');
+        const lightboxNextBtn = document.querySelector('.lightbox-next');
+
+        let currentAlbumPhotos = [];
+        let currentPhotoIndex = 0;
+
+        function showLightboxPhoto(index) {
+            if (currentAlbumPhotos.length > 0) {
+                const photo = currentAlbumPhotos[index];
+                lightboxImage.src = photo.src;
+                lightboxTitle.textContent = photo.title;
+                lightboxDate.textContent = photo.date;
+            }
+        }
+
+        window.openLightbox = function(element, type) {
+            if (type === 'single') {
+                currentAlbumPhotos = [{
+                    src: element.dataset.src,
+                    title: element.dataset.title,
+                    date: element.dataset.date
+                }];
+                currentPhotoIndex = 0;
+                lightboxNav.classList.add('hidden');
+            } else if (type === 'album') {
+                currentAlbumPhotos = JSON.parse(element.dataset.photos);
+                currentPhotoIndex = 0;
+                lightboxNav.classList.remove('hidden');
+            }
+            showLightboxPhoto(currentPhotoIndex);
+            lightboxOverlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        };
+
+        function closeLightbox() {
+            lightboxOverlay.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        function navigateLightbox(direction) {
+            currentPhotoIndex += direction;
+            if (currentPhotoIndex < 0) {
+                currentPhotoIndex = currentAlbumPhotos.length - 1;
+            } else if (currentPhotoIndex >= currentAlbumPhotos.length) {
+                currentPhotoIndex = 0;
+            }
+            showLightboxPhoto(currentPhotoIndex);
+        }
+
+        lightboxCloseBtn.addEventListener('click', closeLightbox);
+        lightboxOverlay.addEventListener('click', (e) => e.target === lightboxOverlay && closeLightbox());
+        lightboxPrevBtn.addEventListener('click', (e) => { e.stopPropagation(); navigateLightbox(-1); });
+        lightboxNextBtn.addEventListener('click', (e) => { e.stopPropagation(); navigateLightbox(1); });
+        document.addEventListener('keydown', (e) => {
+            if (lightboxOverlay.style.display === 'flex') {
+                if (e.key === "Escape") closeLightbox();
+                if (e.key === "ArrowLeft" && currentAlbumPhotos.length > 1) navigateLightbox(-1);
+                if (e.key === "ArrowRight" && currentAlbumPhotos.length > 1) navigateLightbox(1);
+            }
+        });
+
+        // --- ANIMATION & BACK TO TOP SCRIPT ---
+        function initScrollAnimation() {
+            const animatedElements = document.querySelectorAll('.animate-on-scroll');
+            const scrollObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    } else {
+                        entry.target.classList.remove('is-visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            animatedElements.forEach(el => scrollObserver.observe(el));
+        }
+
+        function initBackToTopButton() {
+            const backToTopBtn = document.getElementById('back-to-top-btn');
+            if (!backToTopBtn) return;
+            window.onscroll = () => {
+                if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                    backToTopBtn.style.display = "block";
+                } else {
+                    backToTopBtn.style.display = "none";
+                }
+            };
+            backToTopBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- RUN ALL SCRIPTS ---
+        initScrollAnimation();
+        initBackToTopButton();
+    });
+    </script>
+</body>
+</html>

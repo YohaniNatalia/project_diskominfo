@@ -1,0 +1,109 @@
+
+        .container-list {
+            width: 100%;
+            max-width: 900px;
+            background-color: var(--container-bg);
+            border-radius: 12px;
+            padding: 30px 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin : 0 auto;
+        }
+
+        .book-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            counter-reset: book-counter;
+        }
+
+        .book-item {
+            display: flex;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+            gap: 20px;
+        }
+
+        .book-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* Styling untuk nomor urut */
+        .book-item::before {
+            counter-increment: book-counter;
+            content: counter(book-counter);
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--secondary-text);
+            min-width: 20px;
+            text-align: right;
+        }
+
+        .item-content {
+            flex-grow: 1;
+        }
+
+        .item-content h3 {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .item-content p {
+            font-size: 0.9em;
+            color: var(--secondary-text);
+            margin: 4px 0 0;
+        }
+        
+        /* Styling untuk ikon di kanan */
+        .item-icons {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .item-icons a {
+            color: var(--secondary-text);
+            font-size: 1.2em;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .item-icons a:hover {
+            color: var(--hover-color);
+        }
+
+        /* Styling untuk Paginasi */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            gap: 8px;
+            user-select: none;
+        }
+
+        .pagination a, .pagination span {
+            color: var(--secondary-text);
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .pagination a:not(.disabled):hover {
+            background-color: #e9ecef;
+            color: var(--primary-text);
+        }
+
+        .pagination .page-number.active {
+            background-color: var(--active-bg);
+            color: var(--active-text);
+            font-weight: 600;
+        }
+
+        .pagination .disabled {
+            color: #ccc;
+            cursor: not-allowed;
+        }
