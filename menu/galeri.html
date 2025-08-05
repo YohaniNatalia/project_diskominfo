@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeri - Diskominfo Kota Tanjungpinang</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary-red: #e64848;
+            --navbar-bg: #2D3748;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .bg-primary-red { background-color: var(--color-primary-red ); }
+        .text-primary-red { color: var(--color-primary-red); }
+        nav { background-color: var(--navbar-bg); }
+
+        /* --- Navigasi & Dropdown --- */
+        .nav-menu .group { position: relative; }
+        .nav-menu .group ul {
+            display: none; position: absolute; top: 100%; left: 0; min-width: 12rem;
+            background-color: var(--color-primary-red); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            border-radius: 0.375rem; z-index: 9999; opacity: 0; transform: translateY(10px);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out; pointer-events: none;
+        }
+        .nav-menu .group:hover > ul {
+            display: flex !important; opacity: 1; transform: translateY(0); pointer-events: auto;
+        }
+        .nav-menu .group ul li a {
+            padding: 0.75rem 1rem; display: block; white-space: nowrap; color: white;
+            transition: background-color 0.2s ease;
+        }
+        .nav-menu .group ul li a:hover { background-color: rgba(255, 255, 255, 0.2); }
+
+        /* --- Desain Baru untuk Kartu Foto & Album --- */
+        .photo-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .photo-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.15);
+        }
+        .photo-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        .photo-card:hover img {
+            transform: scale(1.1);
+        }
+        .photo-card .overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+            color: white;
+            padding: 1.5rem;
+            transform: translateY(30%);
+            opacity: 0;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+        .photo-card:hover .overlay {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .photo-card .overlay .photo-title {
+            font-weight: 700;
+            font-size: 1.25rem;
+            line-height: 1.2;
+        }
+        .photo-card .overlay .photo-date {
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+
+        /* --- TOMBOL DOWNLOAD PADA FOTO --- */
+        .download-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        .photo-card:hover .download-btn {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .download-btn:hover {
+            background-color: var(--color-primary-red);
+            transform: scale(1.1);
+        }
+        .download-btn i {
+            font-size: 16px;
+        }
+
+        .album-card .album-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        .album-card .album-meta {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        .album-card .album-count {
+            color: var(--color-primary-red);
+            font-weight: 600;
+        }
+        /* ========== NAVBAR RESPONSIVE STYLES ========== */
+        .nav-menu .group { position: relative; }
+        
+        /* Desktop dropdown styles */
+        .desktop-dropdown {
+            display: none; position: absolute; top: 100%; left: 0; min-width: 12rem;
+            background-color: var(--color-primary-red); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            border-radius: 0.375rem; z-index: 9999; opacity: 0; transform: translateY(10px);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out; pointer-events: none;
+        }
+        
+        .group:hover .desktop-dropdown {
+            display: flex !important; opacity: 1; transform: translateY(0); pointer-events: auto;
+        }
+        
+        .desktop-dropdown li a {
+            padding: 0.75rem 1rem; display: block; color: white; transition: background-color 0.2s ease;
+        }
+        
+        .desktop-dropdown li a:hover { 
+            background-color: rgba(255, 255, 255, 0.2); 
+        }
+        
+        /* Desktop dropdown click functionality */
+        .dropdown-desktop-toggle.active + .desktop-dropdown {
+            display: flex !important; opacity: 1; transform: translateY(0); pointer-events: auto;
+        }
+        
+        .dropdown-arrow-desktop {
+            transition: transform 0.3s ease;
+        }
+        
+        .dropdown-arrow-desktop.rotated {
+            transform: rotate(180deg);
+        }
+        
+        /* Mobile Menu Styles */
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 8px;
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .mobile-menu-btn span {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 3px 0;
+            transition: 0.3s;
+            border-radius: 2px;
+        }
+        
+        .mobile-menu-btn.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+        
+        .mobile-menu-btn.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .mobile-menu-btn.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+        
+        .mobile-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #374151;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        
+        .mobile-menu.active {
+            display: block;
+        }
+        
+        .mobile-menu ul {
+            flex-direction: column;
+            padding: 1rem 0;
+        }
+        
+        .mobile-menu li {
+            border-bottom: 1px solid #4B5563;
+        }
+        
+        .mobile-menu li:last-child {
+            border-bottom: none;
+        }
+        
+        .mobile-menu a {
+            display: block;
+            padding: 1rem 1.5rem;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        
+        .mobile-menu a:hover {
+            background-color: #4B5563;
+        }
+        
+        /* Active menu item */
+        .nav-menu a.active {
+            color: #60A5FA !important;
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .nav-menu a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background-color: #60A5FA;
+            border-radius: 2px;
+        }
+        
+        /* Mobile dropdown styles */
+        .mobile-dropdown {
+            display: none;
+            background-color: #4B5563;
+            padding-left: 1rem;
+        }
+        
+        .mobile-dropdown.active {
+            display: block;
+        }
+        
+        .mobile-dropdown a {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .dropdown-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 1rem 1.5rem;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .dropdown-toggle:hover {
+            background-color: #4B5563;
+        }
+        
+        .dropdown-arrow {
+            transition: transform 0.3s ease;
+        }
+        
+        .dropdown-arrow.rotated {
+            transform: rotate(180deg);
+        }
+        
+        /* Desktop responsive */
+        @media (min-width: 768px) {
+            .mobile-menu-btn {
+                display: none !important;
+            }
+            
+            .nav-menu {
+                display: flex !important;
+            }
+            
+            .mobile-menu {
+                display: none !important;
+            }
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 767px) {
+            .mobile-menu-btn {
+                display: flex;
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+            
+            .nav-menu a.active::after {
+                display: none;
+            }
+            
+            .mobile-menu a.active {
+                background-color: #4B5563;
+                color: #60A5FA;
+            }
+        }
+
+        /* --- Lightbox (Pop-up Foto) --- */
+        .lightbox-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.85); z-index: 1000;
+            justify-content: center; align-items: center; cursor: pointer;
+            backdrop-filter: blur(5px);
+        }
+        .lightbox-content {
+            position: relative; max-width: 90%; max-height: 90%;
+            background-color: #fff; padding: 1.5rem; border-radius: 0.75rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: fadeInScale 0.3s ease-out;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .lightbox-content img {
+            max-width: 100%; max-height: 70vh; object-fit: contain;
+            border-radius: 0.5rem; margin-bottom: 1rem;
+        }
+        .lightbox-close {
+            position: absolute; top: 1rem; right: 1.5rem; color: #fff;
+            font-size: 2.5rem; cursor: pointer; transition: color 0.2s ease; z-index: 1001;
+        }
+        .lightbox-close:hover { color: var(--color-primary-red); }
+        .lightbox-nav-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5); color: white;
+            padding: 0.75rem 0.5rem; border-radius: 0.375rem; cursor: pointer;
+            z-index: 1002; font-size: 1.5rem; transition: background-color 0.2s ease;
+        }
+        .lightbox-nav-btn:hover { background-color: rgba(0, 0, 0, 0.7); }
+        .lightbox-prev { left: 1rem; }
+        .lightbox-next { right: 1rem; }
+
+        /* --- TOMBOL DOWNLOAD DI LIGHTBOX --- */
+        .lightbox-download-btn {
+            position: absolute;
+            top: 1rem;
+            left: 1.5rem;
+            background-color: var(--color-primary-red);
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background-color 0.2s ease;
+            z-index: 1001;
+        }
+        .lightbox-download-btn:hover {
+            background-color: #c53030;
+        }
+
+        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+        /* ========== CSS UNTUK ANIMASI & TOMBOL ========== */
+        .animate-on-scroll { 
+            opacity: 0; 
+            transform: translateY(40px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out; 
+        }
+        .animate-on-scroll.is-visible { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+        #back-to-top-btn {
+            display: none; position: fixed; bottom: 30px; right: 30px; z-index: 1001;
+            background-color: var(--color-primary-red); color: white; border: none;
+            cursor: pointer; padding: 15px; border-radius: 50%; width: 55px; height: 55px;
+            font-size: 20px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        #back-to-top-btn:hover {
+            background-color: #c53030; transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Elemen HTML untuk tombol diletakkan di sini, setelah <body> -->
+    <button id="back-to-top-btn" title="Kembali ke atas">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <header id="page-top" class="bg-primary-red text-white py-4 px-4 shadow-md relative z-20">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center space-x-4 mb-4 md:mb-0">
+                <img src="../images/logo.png" alt="Logo Kota Tanjungpinang" class="w-16 h-16 object-contain">
+                <div class="text-lg font-bold text-center md:text-left">
+                    <div>DINAS KOMUNIKASI DAN INFORMATIKA</div>
+                    <div>KOTA TANJUNGPINANG</div>
+                </div>
+            </div>
+            <div class="social-icons flex space-x-4 mb-4 md:mb-0">
+                <a href="https://youtube.com/DiskominfoKotaTanjungpinang" class="text-white hover:text-gray-300"><i class="fab fa-youtube text-2xl"></i></a>
+                <a href="https://instagram.com/diskominfotanjungpinang" class="text-white hover:text-gray-300"><i class="fab fa-instagram text-2xl"></i></a>
+                <a href="https://facebook.com/KominfoTanjungpinang" class="text-white hover:text-gray-300"><i class="fab fa-facebook text-2xl"></i></a>
+                <a href="#" class="text-white hover:text-gray-300"><i class="fas fa-user text-2xl"></i></a>
+            </div>
+        </div>
+    </header>
+
+    <!-- NAVBAR YANG DIPERBAIKI -->
+    <nav class="bg-gray-800 text-white p-4 shadow-md sticky top-0 z-50 relative">
+        <div class="container mx-auto">
+            <!-- Desktop Navigation -->
+            <div class="flex justify-center items-center relative">
+                <ul class="nav-menu hidden md:flex gap-6 font-bold">
+                    <li><a href="../index.html" class="hover:text-blue-300 transition duration-300">BERANDA</a></li>
+                    <li class="group">
+                        <a href="#" class="hover:text-blue-300 flex items-center transition duration-300 dropdown-desktop-toggle">
+                            PROFIL <i class="fas fa-chevron-down ml-2 text-xs dropdown-arrow-desktop"></i>
+                        </a>
+                        <ul class="group-hover:flex flex-col desktop-dropdown">
+                            <li><a href="visi.html" class="hover:bg-blue-600 rounded-t-md">Visi & Misi</a></li>
+                            <li><a href="struktur.html" class="hover:bg-blue-600">Struktur Organisasi</a></li>
+                            <li><a href="tupoksi.html" class="hover:bg-blue-600 rounded-b-md">Tupoksi</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="berita.html" class="hover:text-blue-300 transition duration-300">BERITA</a></li>
+                    <li><a href="galeri.html" class="hover:text-blue-300 transition duration-300 active">GALERI</a></li>
+                    <li><a href="artikel.html" class="hover:text-blue-300 transition duration-300">ARTIKEL</a></li>
+                    <li><a href="pengumuman.html" class="hover:text-blue-300 transition duration-300">PENGUMUMAN</a></li>
+                    <li><a href="kalender.html" class="hover:text-blue-300 transition duration-300">KALENDER</a></li>
+                    <li><a href="download.html" class="hover:text-blue-300 transition duration-300">DOWNLOAD</a></li>
+                    <li><a href="statistik.html" class="hover:text-blue-300 transition duration-300">STATISTIK</a></li>
+                </ul>
+                
+                <!-- Mobile Menu Button -->
+                <div class="mobile-menu-btn md:hidden">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            
+            <!-- Mobile Navigation -->
+            <div class="mobile-menu">
+                <ul>
+                    <li><a href="index.html" class="active">BERANDA</a></li>
+                    <li>
+                        <div class="dropdown-toggle">
+                            <span>PROFIL</span>
+                            <i class="fas fa-chevron-down dropdown-arrow"></i>
+                        </div>
+                        <div class="mobile-dropdown">
+                            <a href="menu/visi.html">Visi & Misi</a>
+                            <a href="menu/struktur.html">Struktur Organisasi</a>
+                            <a href="menu/tupoksi.html">Tupoksi</a>
+                        </div>
+                    </li>
+                    <li><a href="menu/berita.html">BERITA</a></li>
+                    <li><a href="menu/galeri.html">GALERI</a></li>
+                    <li><a href="menu/artikel.html">ARTIKEL</a></li>
+                    <li><a href="menu/pengumuman.html">PENGUMUMAN</a></li>
+                    <li><a href="menu/kalender.html">KALENDER</a></li>
+                    <li><a href="menu/download.html">DOWNLOAD</a></li>
+                    <li><a href="menu/statistik.html">STATISTIK</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto mt-8 mb-16 px-4">
+        <section class="py-12">
+            <div class="text-center mb-12 animate-on-scroll">
+                <h1 class="text-4xl font-bold text-gray-800">Galeri Kegiatan</h1>
+            </div>
+
+            <div class="mb-16">
+                <h2 class="text-3xl font-bold text-primary-red mb-8 animate-on-scroll">Foto Terbaru</h2>
+                <div id="individual-photos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="photo-card animate-on-scroll">
+                        <img src="../images/iya 1.png" alt="Suasana Rapat Dinas">
+                        <button class="download-btn" onclick="downloadImage('../images/iya 1.png', 'Suasana_Rapat_Dinas_Mei_2025.png')" title="Download Gambar">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <div class="overlay">
+                            <h3 class="photo-title">Suasana Rapat Dinas Bulan Mei</h3>
+                            <p class="photo-date">10 Mei 2025</p>
+                        </div>
+                        <a href="#" onclick="openLightbox(this, 'single'); return false;" data-src="../images/iya 1.png" data-title="Suasana Rapat Dinas Bulan Mei" data-date="10 Mei 2025" class="absolute inset-0 z-5"></a>
+                    </div>
+                    
+                    <div class="photo-card animate-on-scroll">
+                        <img src="../images/iya 1.png" alt="Penyerahan Bantuan Sosial">
+                        <button class="download-btn" onclick="downloadImage('../images/iya 1.png', 'Penyerahan_Bantuan_Sosial_Mei_2025.png')" title="Download Gambar">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <div class="overlay">
+                            <h3 class="photo-title">Penyerahan Bantuan Sosial</h3>
+                            <p class="photo-date">03 Mei 2025</p>
+                        </div>
+                        <a href="#" onclick="openLightbox(this, 'single'); return false;" data-src="../images/iya 1.png" data-title="Penyerahan Bantuan Sosial" data-date="03 Mei 2025" class="absolute inset-0 z-5"></a>
+                    </div>
+                    
+                    <div class="photo-card animate-on-scroll">
+                        <img src="../images/iya 1.png" alt="Peresmian Gedung Baru">
+                        <button class="download-btn" onclick="downloadImage('../images/iya 1.png', 'Peresmian_Gedung_Pelayanan_Publik_April_2025.png')" title="Download Gambar">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <div class="overlay">
+                            <h3 class="photo-title">Peresmian Gedung Pelayanan Publik</h3>
+                            <p class="photo-date">25 April 2025</p>
+                        </div>
+                        <a href="#" onclick="openLightbox(this, 'single'); return false;" data-src="../images/iya 1.png" data-title="Peresmian Gedung Pelayanan Publik" data-date="25 April 2025" class="absolute inset-0 z-5"></a>
+                    </div>
+                    
+                    <div class="photo-card animate-on-scroll">
+                        <img src="../images/iya 1.png" alt="Workshop Digitalisasi">
+                        <button class="download-btn" onclick="downloadImage('../images/iya 1.png', 'Workshop_Digitalisasi_Administrasi_April_2025.png')" title="Download Gambar">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <div class="overlay">
+                            <h3 class="photo-title">Workshop Digitalisasi Administrasi</h3>
+                            <p class="photo-date">18 April 2025</p>
+                        </div>
+                        <a href="#" onclick="openLightbox(this, 'single'); return false;" data-src="../images/iya 1.png" data-title="Workshop Digitalisasi Administrasi" data-date="18 April 2025" class="absolute inset-0 z-5"></a>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h2 class="text-3xl font-bold text-primary-red mb-8 animate-on-scroll">Album Kegiatan</h2>
+                <div id="album-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden animate-on-scroll">
+                        <a href="#" class="block" onclick="openLightbox(this, 'album'); return false;" data-photos='[{"src": "../images/iya 1.png", "title": "Apel Pagi (1)", "date": "15 Mei 2025"}, {"src": "../images/iya 1.png", "title": "Apel Pagi (2)", "date": "15 Mei 2025"}]'>
+                            <img src="../images/iya 1.png" alt="Sampul Album Apel Pagi" class="w-full h-56 object-cover hover:opacity-90 transition">
+                        </a>
+                        <div class="p-6">
+                            <h3 class="album-title">Apel Pagi Pegawai</h3>
+                            <p class="text-gray-600 mt-2 mb-4">Kumpulan momen apel pagi rutin dan kegiatan internal dinas.</p>
+                            <div class="album-meta flex justify-between items-center border-t pt-4">
+                                <span><i class="fas fa-calendar-alt mr-2"></i>15 Mei 2025</span>
+                                <span class="album-count"><i class="fas fa-images mr-2"></i>2 Foto</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden animate-on-scroll">
+                        <a href="#" class="block" onclick="openLightbox(this, 'album'); return false;" data-photos='[{"src": "../images/iya 1.png", "title": "Rakor Smart City (1)", "date": "10 April 2025"}, {"src": "../images/iya 1.png", "title": "Rakor Smart City (2)", "date": "10 April 2025"}]'>
+                            <img src="../images/iya 1.png" alt="Sampul Album Rakor Smart City" class="w-full h-56 object-cover hover:opacity-90 transition">
+                        </a>
+                        <div class="p-6">
+                            <h3 class="album-title">Rakor Program Smart City</h3>
+                            <p class="text-gray-600 mt-2 mb-4">Dokumentasi rapat strategis dan pengembangan kota cerdas.</p>
+                            <div class="album-meta flex justify-between items-center border-t pt-4">
+                                <span><i class="fas fa-calendar-alt mr-2"></i>10 April 2025</span>
+                                <span class="album-count"><i class="fas fa-images mr-2"></i>2 Foto</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden animate-on-scroll">
+                        <a href="#" class="block" onclick="openLightbox(this, 'album'); return false;" data-photos='[{"src": "../images/iya 1.png", "title": "Kunjungan Kerja (1)", "date": "28 Maret 2025"}, {"src": "../images/iya 1.png", "title": "Kunjungan Kerja (2)", "date": "28 Maret 2025"}]'>
+                            <img src="../images/iya 1.png" alt="Sampul Album Kunjungan Kerja" class="w-full h-56 object-cover hover:opacity-90 transition">
+                        </a>
+                        <div class="p-6">
+                            <h3 class="album-title">Kunjungan Kerja</h3>
+                            <p class="text-gray-600 mt-2 mb-4">Galeri foto dari kunjungan resmi dan studi banding ke berbagai instansi.</p>
+                            <div class="album-meta flex justify-between items-center border-t pt-4">
+                                <span><i class="fas fa-calendar-alt mr-2"></i>28 Maret 2025</span>
+                                <span class="album-count"><i class="fas fa-images mr-2"></i>2 Foto</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Lightbox untuk menampilkan foto besar -->
+    <div id="lightbox" class="lightbox-overlay" onclick="closeLightbox()">
+        <div class="lightbox-content" onclick="event.stopPropagation()">
+            <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+            <button class="lightbox-download-btn" id="lightbox-download" onclick="downloadCurrentImage()">
+                <i class="fas fa-download"></i>
+                Download
+            </button>
+            <div class="lightbox-nav-btn lightbox-prev" onclick="previousImage()" style="display: none;">
+                <i class="fas fa-chevron-left"></i>
+            </div>
+            <div class="lightbox-nav-btn lightbox-next" onclick="nextImage()" style="display: none;">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <img id="lightbox-image" src="" alt="">
+            <div class="text-center mt-4">
+                <h3 id="lightbox-title" class="text-xl font-bold text-gray-800"></h3>
+                <p id="lightbox-date" class="text-gray-600 mt-2"></p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-gray-800 text-white p-6 mt-10">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-start space-y-8 md:space-y-0 md:space-x-8">
+            <div class="footer-section flex flex-col items-center md:items-start text-center md:text-left w-full md:w-1/3">
+                <img src="../images/logo.png" alt="Logo Kota Tanjungpinang" class="w-20 h-20 object-contain mb-4">
+                <h3 class="text-xl font-bold mb-4">Hubungi Kami</h3>
+                <p class="text-sm mb-2"><i class="fas fa-map-marker-alt mr-2"></i> <strong>Alamat:</strong> Jl. Basuki Rahmat No. 4, Tanjungpinang, Kepulauan Riau, Indonesia 29124</p>
+                <p class="text-sm mb-2"><i class="fas fa-envelope mr-2"></i> <strong>Email:</strong> diskominfo@tanjungpinangkota.go.id</p>
+                <p class="text-sm"><i class="fas fa-phone-alt mr-2"></i> <strong>Telepon:</strong> (0771) 21694</p>
+            </div>
+
+            <div class="footer-section text-center md:text-left w-full md:w-1/3">
+                <h3 class="text-xl font-bold mb-4">Statistik Pengunjung</h3>
+                <div class="visitor-stats text-sm space-y-2">
+                    <div class="stat-item flex justify-between items-center p-2 text-white">
+                        <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-green-500 mr-2"></span>Online</span>
+                        <span id="visitorsOnline">1</span>
+                    </div>
+                    <div class="stat-item flex justify-between items-center p-2 text-white">
+                        <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-yellow-500 mr-2"></span>Hari ini</span>
+                        <span id="visitorsToday">45</span>
+                    </div>
+                    <div class="stat-item flex justify-between items-center p-2 text-white">
+                        <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-blue-500 mr-2"></span>Total</span>
+                        <span id="visitorsTotal">12,456</span>
+                    </div>
+                </div>
+                <button class="guest-book-btn mt-6 bg-primary-red text-white px-6 py-3 rounded-md hover:bg-red-700 transition duration-300 w-full">
+                    <i class="fas fa-book mr-2"></i> Isi Buku Tamu
+                </button>
+            </div>
+
+            <div class="footer-section text-center md:text-left w-full md:w-1/3">
+                <h3 class="text-xl font-bold mb-4">Berita Populer</h3>
+                <ul class="popular-news text-sm space-y-3">
+                    <li class="flex items-start p-2 hover:bg-gray-700 rounded transition duration-300">
+                        <div class="news-date text-primary-red font-semibold mr-3">15 Jan</div>
+                        <div>Pj. Wali Kota Beri Apresiasi pada Wajib Pajak</div>
+                    </li>
+                    <li class="flex items-start p-2 hover:bg-gray-700 rounded transition duration-300">
+                        <div class="news-date text-primary-red font-semibold mr-3">14 Jan</div>
+                        <div>Rapat Koordinasi Pembangunan Infrastruktur</div>
+                    </li>
+                    <li class="flex items-start p-2 hover:bg-gray-700 rounded transition duration-300">
+                        <div class="news-date text-primary-red font-semibold mr-3">13 Jan</div>
+                        <div>Peluncuran Program Smart City Tanjungpinang</div>
+                    </li>
+                    <li class="flex items-start p-2 hover:bg-gray-700 rounded transition duration-300">
+                        <div class="news-date text-primary-red font-semibold mr-3">12 Jan</div>
+                        <div>Sosialisasi Aplikasi Pelayanan Digital</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-400">
+            <p>© 2025 Dinas Komunikasi dan Informatika Kota Tanjungpinang_KP_UMRAH_TEKNIK INFORMATIKA ©</p>
+        </div>
+    </footer>
+
+    <script>
+        // ========== VARIABEL GLOBAL UNTUK LIGHTBOX ==========
+        let currentImageIndex = 0;
+        let currentPhotos = [];
+        let currentImageSrc = '';
+        let currentImageTitle = '';
+
+        // ========== FUNGSI DOWNLOAD GAMBAR ==========
+        function downloadImage(imageSrc, filename) {
+            // Buat elemen anchor untuk download
+            const link = document.createElement('a');
+            link.href = imageSrc;
+            link.download = filename || 'image.png';
+            
+            // Tambahkan ke DOM, klik, lalu hapus
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Tampilkan notifikasi
+            showNotification('Gambar sedang didownload...');
+        }
+
+        // ========== FUNGSI DOWNLOAD GAMBAR SAAT INI DI LIGHTBOX ==========
+        function downloadCurrentImage() {
+            if (currentImageSrc) {
+                const filename = currentImageTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.png';
+                downloadImage(currentImageSrc, filename);
+            }
+        }
+
+        // ========== FUNGSI NOTIFIKASI ==========
+        function showNotification(message) {
+            // Buat elemen notifikasi
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: #10b981;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 10000;
+                font-weight: 600;
+                animation: slideInRight 0.3s ease-out;
+            `;
+            notification.textContent = message;
+            
+            // Tambahkan CSS animasi
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideInRight {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOutRight {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Tampilkan notifikasi
+            document.body.appendChild(notification);
+            
+            // Hapus notifikasi setelah 3 detik
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease-out';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // ========== FUNGSI LIGHTBOX ==========
+        function openLightbox(element, type) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImage = document.getElementById('lightbox-image');
+            const lightboxTitle = document.getElementById('lightbox-title');
+            const lightboxDate = document.getElementById('lightbox-date');
+            const prevBtn = document.querySelector('.lightbox-prev');
+            const nextBtn = document.querySelector('.lightbox-next');
+
+            if (type === 'single') {
+                // Foto tunggal
+                currentImageSrc = element.getAttribute('data-src');
+                currentImageTitle = element.getAttribute('data-title');
+                const imageDate = element.getAttribute('data-date');
+                
+                lightboxImage.src = currentImageSrc;
+                lightboxTitle.textContent = currentImageTitle;
+                lightboxDate.textContent = imageDate;
+                
+                // Sembunyikan navigasi untuk foto tunggal
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+                currentPhotos = [];
+                currentImageIndex = 0;
+                
+            } else if (type === 'album') {
+                // Album foto
+                currentPhotos = JSON.parse(element.getAttribute('data-photos'));
+                currentImageIndex = 0;
+                
+                if (currentPhotos.length > 0) {
+                    currentImageSrc = currentPhotos[0].src;
+                    currentImageTitle = currentPhotos[0].title;
+                    
+                    lightboxImage.src = currentImageSrc;
+                    lightboxTitle.textContent = currentImageTitle;
+                    lightboxDate.textContent = currentPhotos[0].date;
+                    
+                    // Tampilkan navigasi jika ada lebih dari 1 foto
+                    if (currentPhotos.length > 1) {
+                        prevBtn.style.display = 'block';
+                        nextBtn.style.display = 'block';
+                    } else {
+                        prevBtn.style.display = 'none';
+                        nextBtn.style.display = 'none';
+                    }
+                }
+            }
+            
+            lightbox.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            currentPhotos = [];
+            currentImageIndex = 0;
+            currentImageSrc = '';
+            currentImageTitle = '';
+        }
+
+        function previousImage() {
+            if (currentPhotos.length > 0) {
+                currentImageIndex = (currentImageIndex - 1 + currentPhotos.length) % currentPhotos.length;
+                updateLightboxImage();
+            }
+        }
+
+        function nextImage() {
+            if (currentPhotos.length > 0) {
+                currentImageIndex = (currentImageIndex + 1) % currentPhotos.length;
+                updateLightboxImage();
+            }
+        }
+
+        function updateLightboxImage() {
+            const lightboxImage = document.getElementById('lightbox-image');
+            const lightboxTitle = document.getElementById('lightbox-title');
+            const lightboxDate = document.getElementById('lightbox-date');
+            
+            const currentPhoto = currentPhotos[currentImageIndex];
+            currentImageSrc = currentPhoto.src;
+            currentImageTitle = currentPhoto.title;
+            
+            lightboxImage.src = currentImageSrc;
+            lightboxTitle.textContent = currentImageTitle;
+            lightboxDate.textContent = currentPhoto.date;
+        }
+
+        // ========== KEYBOARD NAVIGATION ==========
+        document.addEventListener('keydown', function(e) {
+            const lightbox = document.getElementById('lightbox');
+            if (lightbox.style.display === 'flex') {
+                if (e.key === 'Escape') {
+                    closeLightbox();
+                } else if (e.key === 'ArrowLeft') {
+                    previousImage();
+                } else if (e.key === 'ArrowRight') {
+                    nextImage();
+                }
+            }
+        });
+        // ========== NAVBAR RESPONSIVE FUNCTIONALITY ==========
+        
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const mobileMenu = document.querySelector('.mobile-menu');
+            
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    mobileMenu.classList.toggle('active');
+                });
+            }
+            
+            // Mobile dropdown toggle
+            const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+            dropdownToggles.forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    const dropdown = this.nextElementSibling;
+                    const arrow = this.querySelector('.dropdown-arrow');
+                    
+                    if (dropdown && dropdown.classList.contains('mobile-dropdown')) {
+                        dropdown.classList.toggle('active');
+                        arrow.classList.toggle('rotated');
+                    }
+                });
+            });
+            
+            // Set active menu based on current page
+            setActiveMenu();
+        });
+           // ========== FUNGSI UNTUK MENANDAI MENU AKTIF ==========
+    function setActiveMenu() {
+        // Mendapatkan path relatif dari root, bukan hanya nama file
+        const currentPagePath = window.location.pathname; 
+        const menuLinks = document.querySelectorAll('.nav-menu a, .mobile-menu a');
+        
+        menuLinks.forEach(link => {
+            link.classList.remove('active');
+            const href = link.getAttribute('href');
+            
+            if (href && currentPagePath.includes(href.replace('../', ''))) {
+                link.classList.add('active');
+            }
+        });
+
+        // Penanganan khusus untuk halaman Beranda (index.html)
+        if (currentPagePath.endsWith('/') || currentPagePath.endsWith('index.html')) {
+            document.querySelector('.nav-menu a[href="../index.html"]').classList.add('active');
+            document.querySelector('.mobile-menu a[href="../index.html"]').classList.add('active');
+        }
+    }
+
+        // ========== SCROLL ANIMATION ==========
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // ========== BACK TO TOP BUTTON ==========
+        const backToTopBtn = document.getElementById('back-to-top-btn');
+
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.style.display = 'block';
+            } else {
+                backToTopBtn.style.display = 'none';
+            }
+        });
+
+        backToTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+
+</body>
+</html>
+

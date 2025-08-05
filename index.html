@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dinas Komunikasi dan Informatika Kota Tanjungpinang</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+        :root {
+            --color-primary-red: #e64848;
+        }
+        html {
+            scroll-behavior: smooth; /* Membuat scroll menjadi halus */
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .bg-primary-red { background-color: var(--color-primary-red ); }
+        
+         /* ========== NAVBAR RESPONSIVE STYLES ========== */
+        .nav-menu .group { position: relative; }
+        .nav-menu .group ul {
+            display: none; position: absolute; top: 100%; left: 0; min-width: 12rem;
+            background-color: var(--color-primary-red); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            border-radius: 0.375rem; z-index: 9999; opacity: 0; transform: translateY(10px);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out; pointer-events: none;
+        }
+        .nav-menu .group:hover > ul {
+            display: flex !important; opacity: 1; transform: translateY(0); pointer-events: auto;
+        }
+        .nav-menu .group ul li a {
+            padding: 0.75rem 1rem; display: block; white-space: nowrap; color: white;
+            transition: background-color 0.2s ease;
+        }
+        .nav-menu.group ul li a:hover {background-color: rgba(255, 255, 255, 0.2);
+        }
+ 
+        /* Desktop dropdown styles */
+        .desktop-dropdown {
+            display: none; position: absolute; top: 100%; left: 0; min-width: 12rem;
+            background-color: var(--color-primary-red); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            border-radius: 0.375rem; z-index: 9999; opacity: 0; transform: translateY(10px);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out; pointer-events: none;
+        }
+        
+        .group:hover .desktop-dropdown {
+            display: flex !important; opacity: 1; transform: translateY(0); pointer-events: auto;
+        }
+        
+        .desktop-dropdown li a {
+            padding: 0.75rem 1rem; display: block; color: white; transition: background-color 0.2s ease;
+        }
+        
+        .desktop-dropdown li a:hover { 
+            background-color: rgba(255, 255, 255, 0.2); 
+        }
+        
+        /* Desktop dropdown click functionality */
+        .dropdown-desktop-toggle.active + .desktop-dropdown {
+            display: flex !important; opacity: 1; transform: translateY(0); pointer-events: auto;
+        }
+        
+        .dropdown-arrow-desktop {
+            transition: transform 0.3s ease;
+        }
+        
+        .dropdown-arrow-desktop.rotated {
+            transform: rotate(180deg);
+        }
+        
+        /* Mobile Menu Styles */
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 8px;
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .mobile-menu-btn span {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 3px 0;
+            transition: 0.3s;
+            border-radius: 2px;
+        }
+        
+        .mobile-menu-btn.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+        
+        .mobile-menu-btn.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .mobile-menu-btn.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+        
+        .mobile-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #374151;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        
+        .mobile-menu.active {
+            display: block;
+        }
+        
+        .mobile-menu ul {
+            flex-direction: column;
+            padding: 1rem 0;
+        }
+        
+        .mobile-menu li {
+            border-bottom: 1px solid #4B5563;
+        }
+        
+        .mobile-menu li:last-child {
+            border-bottom: none;
+        }
+        
+        .mobile-menu a {
+            display: block;
+            padding: 1rem 1.5rem;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        
+        .mobile-menu a:hover {
+            background-color: #4B5563;
+        }
+        
+        /* Active menu item */
+        .nav-menu a.active {
+            color: #60A5FA !important;
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .nav-menu a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background-color: #60A5FA;
+            border-radius: 2px;
+        }
+        
+        /* Mobile dropdown styles */
+        .mobile-dropdown {
+            display: none;
+            background-color: #4B5563;
+            padding-left: 1rem;
+        }
+        
+        .mobile-dropdown.active {
+            display: block;
+        }
+        
+        .mobile-dropdown a {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .dropdown-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 1rem 1.5rem;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .dropdown-toggle:hover {
+            background-color: #4B5563;
+        }
+        
+        .dropdown-arrow {
+            transition: transform 0.3s ease;
+        }
+        
+        .dropdown-arrow.rotated {
+            transform: rotate(180deg);
+        }
+        
+        /* Desktop responsive */
+        @media (min-width: 768px) {
+            .mobile-menu-btn {
+                display: none !important;
+            }
+            
+            .nav-menu {
+                display: flex !important;
+            }
+            
+            .mobile-menu {
+                display: none !important;
+            }
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 767px) {
+            .mobile-menu-btn {
+                display: flex;
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+            
+            .nav-menu a.active::after {
+                display: none;
+            }
+            
+            .mobile-menu a.active {
+                background-color: #4B5563;
+                color: #60A5FA;
+            }
+        }
+        
+        /* ========== END NAVBAR STYLES ========== */
+        
+        .hero-background {
+            background-image: url('images/gedung.jpg'); background-size: cover; background-position: center;
+            position: relative; min-height: 80vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; padding: 4rem 0; z-index: 1;
+        }
+        .hero-overlay { position: absolute; inset: 0; background-color: rgba(0, 0, 0, 0.6); z-index: 1; }
+        .hero-content { position: relative; z-index: 2; }
+        .news-card, .info-box { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .news-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .info-box:hover { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+        footer { background-color: #2D3748; }
+        .visitor-stats .stat-item { border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .visitor-stats .stat-item:last-child { border-bottom: none; }
+        .status-indicator { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; }
+        
+        .animate-on-scroll { 
+            opacity: 0; 
+            transform: translateY(40px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out; 
+        }
+        .animate-on-scroll.is-visible { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+        
+        .hero-content > * { opacity: 0; transform: translateY(20px); animation: fadeInUp 0.8s ease-out forwards; }
+        .hero-content h1 { animation-delay: 0.2s; }
+        .hero-content .bg-opacity-90 { animation-delay: 0.4s; }
+        .hero-content .flex-col.md\:flex-row { animation-delay: 0.6s; }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* ========== CSS UNTUK TOMBOL BACK TO TOP ========== */
+        #back-to-top-btn {
+            display: none; /* Sembunyi secara default */
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+            background-color: var(--color-primary-red);
+            color: white;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 50%; /* Membuat tombol menjadi bulat */
+            width: 55px;
+            height: 55px;
+            font-size: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        #back-to-top-btn:hover {
+            background-color: #c53030; /* Warna merah lebih gelap saat hover */
+            transform: scale(1.1);
+        }
+        .infografis-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .infografis-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        
+        .infografis-slide.active {
+            opacity: 1;
+        }
+        
+        .infografis-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+        
+        .infografis-indicators {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+         .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .indicator.active {
+            background-color: var(--color-primary-red);
+        }
+         .banner-slideshow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        
+        .banner-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 2s ease-in-out, transform 20s ease-in-out;
+            transform: scale(1);
+        }
+        
+        .banner-slide.active {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        
+        .banner-slide:nth-child(1) {
+            background-image: url('images/banner1.jpg');
+        }
+        
+        .banner-slide:nth-child(2) {
+            background-image: url('images/banner2.jpg');
+        }
+        
+        .banner-slide:nth-child(3) {
+            background-image: url('images/banner3.jpg');
+        }
+        
+        .banner-slide:nth-child(4) {
+            background-image: url('images/gedung.jpg');
+        }
+        
+        .banner-navigation {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 10;
+        }
+        
+        .banner-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+        }
+        
+        .banner-dot.active {
+            background-color: var(--color-primary-red);
+            border-color: white;
+            transform: scale(1.2);
+        }
+        
+        .banner-dot:hover {
+            background-color: rgba(255, 255, 255, 0.8);
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+
+    <!-- Elemen HTML untuk tombol diletakkan di sini, setelah <body> -->
+    <button id="back-to-top-btn" title="Kembali ke atas">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <header id="page-top" class="bg-primary-red text-white py-4 px-4 shadow-md relative z-20">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center space-x-4 mb-4 md:mb-0">
+                <img src="images/logo.png" alt="Logo Kota Tanjungpinang" class="w-16 h-16 object-contain">
+                <div class="text-lg font-bold text-center md:text-left">
+                    <div>DINAS KOMUNIKASI DAN INFORMATIKA</div>
+                    <div>KOTA TANJUNGPINANG</div>
+                </div>
+            </div>
+            <div class="social-icons flex space-x-4 mb-4 md:mb-0">
+                <a href="https://youtube.com/DiskominfoKotaTanjungpinang" class="text-white hover:text-gray-300"><i class="fab fa-youtube text-2xl"></i></a>
+                <a href="https://instagram.com/diskominfotanjungpinang" class="text-white hover:text-gray-300"><i class="fab fa-instagram text-2xl"></i></a>
+                <a href="https://facebook.com/KominfoTanjungpinang" class="text-white hover:text-gray-300"><i class="fab fa-facebook text-2xl"></i></a>
+                <a href="#" class="text-white hover:text-gray-300"><i class="fas fa-user text-2xl"></i></a>
+            </div>
+        </div>
+    </header>
+
+    
+    <!-- NAVBAR YANG DIPERBAIKI -->
+    <nav class="bg-gray-800 text-white p-4 shadow-md sticky top-0 z-50 relative">
+        <div class="container mx-auto">
+            <!-- Desktop Navigation -->
+            <div class="flex justify-center items-center relative">
+                <ul class="nav-menu hidden md:flex gap-6 font-bold">
+                    <li><a href="index.html" class="hover:text-blue-300 transition duration-300 active">BERANDA</a></li>
+                    <li class="group">
+                        <a href="#" class="hover:text-blue-300 flex items-center transition duration-300 dropdown-desktop-toggle">
+                            PROFIL <i class="fas fa-chevron-down ml-2 text-xs dropdown-arrow-desktop"></i>
+                        </a>
+                        <ul class="group-hover:flex flex-col desktop-dropdown">
+                            <li><a href="menu/visi.html" class="hover:bg-blue-600 rounded-t-md">Visi & Misi</a></li>
+                            <li><a href="menu/struktur.html" class="hover:bg-blue-600">Struktur Organisasi</a></li>
+                            <li><a href="menu/tupoksi.html" class="hover:bg-blue-600 rounded-b-md">Tupoksi</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="menu/berita.html" class="hover:text-blue-300 transition duration-300">BERITA</a></li>
+                    <li><a href="menu/galeri.html" class="hover:text-blue-300 transition duration-300">GALERI</a></li>
+                    <li><a href="menu/artikel.html" class="hover:text-blue-300 transition duration-300">ARTIKEL</a></li>
+                    <li><a href="menu/pengumuman.html" class="hover:text-blue-300 transition duration-300">PENGUMUMAN</a></li>
+                    <li><a href="menu/kalender.html" class="hover:text-blue-300 transition duration-300">KALENDER</a></li>
+                    <li><a href="menu/download.html" class="hover:text-blue-300 transition duration-300">DOWNLOAD</a></li>
+                    <li><a href="menu/statistik.html" class="hover:text-blue-300 transition duration-300">STATISTIK</a></li>
+                </ul>
+                
+                <!-- Mobile Menu Button -->
+                <div class="mobile-menu-btn md:hidden">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            
+            <!-- Mobile Navigation -->
+            <div class="mobile-menu">
+                <ul>
+                    <li><a href="index.html" class="active">BERANDA</a></li>
+                    <li>
+                        <div class="dropdown-toggle">
+                            <span>PROFIL</span>
+                            <i class="fas fa-chevron-down dropdown-arrow"></i>
+                        </div>
+                        <div class="mobile-dropdown">
+                            <a href="menu/visi.html">Visi & Misi</a>
+                            <a href="menu/struktur.html">Struktur Organisasi</a>
+                            <a href="menu/tupoksi.html">Tupoksi</a>
+                        </div>
+                    </li>
+                    <li><a href="menu/berita.html">BERITA</a></li>
+                    <li><a href="menu/galeri.html">GALERI</a></li>
+                    <li><a href="menu/artikel.html">ARTIKEL</a></li>
+                    <li><a href="menu/pengumuman.html">PENGUMUMAN</a></li>
+                    <li><a href="menu/kalender.html">KALENDER</a></li>
+                    <li><a href="menu/download.html">DOWNLOAD</a></li>
+                    <li><a href="menu/statistik.html">STATISTIK</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Konten halaman lainnya -->
+    <section class="hero-background text-white p-4">
+        <div class="banner-slideshow">
+            <div class="banner-slide active"></div>
+            <div class="banner-slide"></div>
+            <div class="banner-slide"></div>
+            <div class="banner-slide"></div>
+        </div>
+        <div class="banner-navigation">
+            <div class="banner-dot active" data-slide="0"></div>
+            <div class="banner-dot" data-slide="1"></div>
+            <div class="banner-dot" data-slide="2"></div>
+            <div class="banner-dot" data-slide="3"></div>
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content text-center max-w-6xl mx-auto px-4 flex flex-col items-center justify-center h-full">
+            <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">PEMERINTAH <br> KOTA TANJUNGPINANG</h1>
+            
+            <div class="bg-primary-red bg-opacity-90 p-8 rounded-lg shadow-2xl mb-12 max-w-3xl mx-auto">
+                <p class="text-xl md:text-2xl font-semibold mb-4">Visi dan Misi Wali Kota Tanjungpinang:</p>
+                <p class="text-lg md:text-xl leading-relaxed">
+                    Mewujudkan Tanjungpinang sebagai Kota yang Berbudaya, Indah, Melayani, dan Aman untuk menjadi tempat tinggal, investasi, bisnis, dan kreatif.
+                </p>
+            </div>
+            
+            <div class="flex flex-col md:flex-row justify-center items-end space-y-8 md:space-y-0 md:space-x-16 mt-auto">
+                <div class="flex flex-col items-center">
+                    <div class="w-48 h-48 md:w-56 md:h-56 bg-gray-400 rounded-full overflow-hidden border-4 border-white shadow-lg mb-4">
+                        <img src="images/Potret_Wali_Kota_Tanjungpinang_Lis_Darmansyah.jpg" alt="H. LIS DARMANSYAH, S.H." class="w-full h-full object-cover">
+                    </div>
+                    <div class="text-lg font-bold">H. LIS DARMANSYAH, S.H.</div>
+                    <div class="text-md text-gray-200">WALI KOTA TANJUNGPINANG</div>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="w-48 h-48 md:w-56 md:h-56 bg-gray-400 rounded-full overflow-hidden border-4 border-white shadow-lg mb-4">
+                        <img src="images/DR. H. RAJA ARIZA, M.M..jpg" alt="DR. H. RAJA ARIZA, M.M." class="w-full h-full object-cover">
+                    </div>
+                    <div class="text-lg font-bold">DR. H. RAJA ARIZA, M.M.</div>
+                    <div class="text-md text-gray-200">WAKIL WALI KOTA TANJUNGPINANG</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="news-section py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center mb-8 animate-on-scroll">
+                <h2 class="text-3xl font-bold text-gray-800">BERITA TERKINI</h2>
+                <a href="menu/berita.html" class="text-primary-red hover:underline font-semibold">Lihat Semua Berita →</a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <article class="news-card bg-white rounded-lg shadow-md overflow-hidden animate-on-scroll">
+                    <img src="images/iya 1.png" alt="News Image" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="news-meta text-gray-600 text-sm mb-2 flex items-center justify-between">
+                            <span><i class="fas fa-calendar-alt mr-1"></i> 15 Jan 2025</span>
+                            <span><i class="fas fa-eye mr-1"></i> 120</span>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2 h-16">Pj. Wali Kota Beri Apresiasi pada Wajib Pajak</h3>
+                        <p class="text-gray-700 text-sm mb-4">Penjabat Wali Kota Tanjungpinang, Hasan Sarmansyah memberikan apresiasi kepada wajib pajak...</p>
+                    </div>
+                </article>
+                <article class="news-card bg-white rounded-lg shadow-md overflow-hidden animate-on-scroll" style="transition-delay: 0.1s;">
+                    <img src="images/iya 1.png" alt="News Image" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="news-meta text-gray-600 text-sm mb-2 flex items-center justify-between">
+                            <span><i class="fas fa-calendar-alt mr-1"></i> 14 Jan 2025</span>
+                            <span><i class="fas fa-eye mr-1"></i> 95</span>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2 h-16">Rapat Koordinasi Pembangunan Infrastruktur</h3>
+                        <p class="text-gray-700 text-sm mb-4">Rapat koordinasi penting diadakan untuk membahas progres pembangunan infrastruktur kota...</p>
+                    </div>
+                </article>
+                <article class="news-card bg-white rounded-lg shadow-md overflow-hidden animate-on-scroll" style="transition-delay: 0.2s;">
+                    <img src="images/iya 1.png" alt="News Image" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="news-meta text-gray-600 text-sm mb-2 flex items-center justify-between">
+                            <span><i class="fas fa-calendar-alt mr-1"></i> 13 Jan 2025</span>
+                            <span><i class="fas fa-eye mr-1"></i> 87</span>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2 h-16">Program Digitalisasi Pelayanan Publik</h3>
+                        <p class="text-gray-700 text-sm mb-4">Dinas Kominfo meluncurkan program digitalisasi untuk meningkatkan kualitas pelayanan...</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+ <section class="statistics-section py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12 animate-on-scroll">
+                <h2 class="text-3xl font-bold mb-2 text-gray-800">STATISTIKA</h2>
+                <p class="text-gray-600 text-lg">Indeks SPBE Kota Tanjungpinang Tahun 2021 s/d 2024</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="chart-box bg-white p-6 rounded-lg shadow-lg h-96 border border-gray-200 animate-on-scroll">
+                    <div id="barChart"></div>
+                </div>
+                <div class="chart-box bg-white p-6 rounded-lg shadow-lg h-96 border border-gray-200 animate-on-scroll" style="transition-delay: 0.1s;">
+                    <div id="lineChart"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <section class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="info-box bg-white p-8 rounded-lg shadow-md h-full flex flex-col items-center text-center animate-on-scroll">
+                    <div class="info-box-icon bg-primary-red text-white w-20 h-20 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-chart-pie text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Infografis</h3>
+                    <p class="text-gray-600">Data Diskominfo Kota Tanjungpinang disajikan secara visual, informatif, dan mudah dipahami.</p>
+                     <div class="infografis-container cursor-pointer" onclick="window.location.href='infografis_album.html'">
+                        <div class="infografis-slide active">
+                            <img src="images/update tte.jpg" alt="Infografis Data Analysis">
+                        </div>
+                        <div class="infografis-slide">
+                            <img src="images/tenaga kesehatan.jpg" alt="Infografis Data Analysis 2">
+                        </div>
+                        <div class="infografis-slide ">
+                            <img src="images/spbe 2023.jpg" alt="Infografis Statistik">
+                        </div>
+                        <div class="infografis-slide">
+                            <img src="images/sertifikat elektronik.jpg" alt="Infografis Statistik 2">
+                        </div>
+                     </div>
+
+                        <div class="infografis-indicators">
+                            <div class="indicator active" data-slide="0"></div>
+                            <div class="indicator" data-slide="1"></div>
+                            <div class="indicator" data-slide="2"></div>
+                            <div class="indicator" data-slide="3"></div>
+                        </div>
+
+                <!-- Overlay untuk menunjukkan bahwa area ini clickable -->
+                    <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 transition-all duration-300 flex items-center justify-center opacity-0 hover:opacity-100">
+                            <div class="bg-white bg-opacity-90 px-4 py-2 rounded-lg shadow-lg">
+                                <i class="fas fa-external-link-alt mr-2"></i>
+                                <a href="menu/infografis_album.html" class="font-semibold">Lihat Album Lengkap</a>
+                            </div>
+                        </div>
+                    </div>
+
+                <div class="info-box bg-white p-8 rounded-lg shadow-md h-full flex flex-col items-center text-center animate-on-scroll" style="transition-delay: 0.1s;">
+                    <div class="info-box-icon bg-primary-red text-white w-20 h-20 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-newspaper text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Sarana Web Internal & Eksternal</h3>
+                    <a href="https://rsud.tanjungpinangkota.go.id/" target="_blank">
+                        <i class="fas fa-hospital"></i>
+                        <span>Rumah Sakit Daerah Kota Tanjungpinang</span></a>
+                    <a href="https://humprofoto.tanjungpinangkota.go.id/" target="_blank">
+                        <i class="fas fa-camera"></i>
+                        <span>Gallery Bagian Protokol dan Komunikasi Pimpinan SETDA</span></a>
+                    <a href="https://tpibaratkel.tanjungpinangkota.go.id/" target="_blank">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Kelurahan Tanjungpinang Barat</span></a>
+                    <a href="https://puskesmastanjungunggat.tanjungpinangkota.go.id/" target="_blank">
+                        <i class="fas fa-clinic-medical"></i>
+                        <span>Puskesmas Tanjung Unggat</span></a>
+                    <a href="https://kominfo.go.id/" target="_blank">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>Kementerian Komunikasi dan Informatika RI</span></a>
+                    <a href="https://linggakab.go.id/" target="_blank">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>Pemerintah Kabupaten Lingga</span></a>
+                    <a href="https://batam.go.id/" target="_blank">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>Pemerintah Kota Batam</span></a>
+                    <a href="https://natunakab.go.id/" target="_blank">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>Pemerintah Kabupaten Natuna</span></a>
+                </div>
+                <div class="info-box bg-white p-8 rounded-lg shadow-md h-full flex flex-col items-center text-center animate-on-scroll" style="transition-delay: 0.2s;">
+                    <div class="info-box-icon bg-primary-red text-white w-20 h-20 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-mobile-alt text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Sarana Aplikasi</h3>
+                    <a href="https://drive.tanjungpinangkota.go.id/" target="_blank">
+                        <i class="fas fa-video"></i>
+                        <span>Media Penyimpanan Kota Tanjungpinang</span></a>
+                    <a href="https://ppid.tanjungpinangkota.go.id/" target="_blank">
+                        <i class="fas fa-users"></i>
+                        <span>Pejabat Pengelola Informasi dan Dokumentasi Kota Tanjungpinang</span></a>
+                    <a href="https://data.tanjungpinangkota.go.id/" target="_blank">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Open Data Statistik Kota Tanjungpinang</span></a>
+                    <a href="https://simpeg.tanjungpinangkota.go.id/" target="_blank">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Sistem Informasi Kepegawaian oleh BKPSDM Kota Tanjungpinang</span></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+     <footer class="text-white p-10 mt-10">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="footer-section flex flex-col items-center md:items-start text-center md:text-left">
+                <img src="images/logo.png" alt="Logo Kota Tanjungpinang" class="w-20 h-20 object-contain mb-4">
+                <h3 class="text-xl font-bold mb-4">Hubungi Kami</h3>
+                <p class="text-sm mb-2"><i class="fas fa-map-marker-alt mr-2"></i> <strong>Alamat:</strong> Jl. Basuki Rahmat No. 4, Tanjungpinang, Kepulauan Riau, Indonesia 29124</p>
+                <p class="text-sm mb-2"><i class="fas fa-envelope mr-2"></i> <strong>Email:</strong> diskominfo@tanjungpinangkota.go.id</p>
+                <p class="text-sm"><i class="fas fa-phone-alt mr-2"></i> <strong>Telepon:</strong> (0771 ) 21694</p>
+            </div>
+            <div class="footer-section text-center md:text-left">
+                <h3 class="text-xl font-bold mb-4">Statistik Pengunjung</h3>
+                <div class="visitor-stats text-sm space-y-2">
+                    <div class="stat-item flex justify-between items-center p-2">
+                        <span class="flex items-center"><span class="status-indicator bg-green-500"></span>Online</span>
+                        <span id="visitorsOnline" class="font-bold text-lg" data-target="15">0</span>
+                    </div>
+                    <div class="stat-item flex justify-between items-center p-2">
+                        <span class="flex items-center"><span class="status-indicator bg-yellow-500"></span>Hari ini</span>
+                        <span id="visitorsToday" class="font-bold text-lg" data-target="256">0</span>
+                    </div>
+                    <div class="stat-item flex justify-between items-center p-2">
+                        <span class="flex items-center"><span class="status-indicator bg-blue-500"></span>Total</span>
+                        <span id="visitorsTotal" class="font-bold text-lg" data-target="12456">0</span>
+                    </div>
+                </div>
+                <button class="guest-book-btn mt-6 bg-primary-red text-white px-6 py-3 rounded-md hover:bg-red-700 transition duration-300 w-full">
+                    <i class="fas fa-book mr-2"></i> Isi Buku Tamu
+                </button>
+            </div>
+            <div class="footer-section text-center md:text-left">
+                <h3 class="text-xl font-bold mb-4">Berita Populer</h3>
+                <ul class="popular-news text-sm space-y-3">
+                    <li class="p-2 hover:bg-gray-700 rounded transition duration-300"><a href="#" class="flex items-start"><div class="news-date text-primary-red font-semibold mr-3">15 Jan</div><div>Pj. Wali Kota Beri Apresiasi pada Wajib Pajak</div></a></li>
+                    <li class="p-2 hover:bg-gray-700 rounded transition duration-300"><a href="#" class="flex items-start"><div class="news-date text-primary-red font-semibold mr-3">14 Jan</div><div>Rapat Koordinasi Pembangunan Infrastruktur</div></a></li>
+                    <li class="p-2 hover:bg-gray-700 rounded transition duration-300"><a href="#" class="flex items-start"><div class="news-date text-primary-red font-semibold mr-3">13 Jan</div><div>Peluncuran Program Smart City Tanjungpinang</div></a></li>
+                    <li class="p-2 hover:bg-gray-700 rounded transition duration-300"><a href="#" class="flex items-start"><div class="news-date text-primary-red font-semibold mr-3">12 Jan</div><div>Sosialisasi Aplikasi Pelayanan Digital</div></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-400">
+            <p>© 2025 Dinas Komunikasi dan Informatika Kota Tanjungpinang_KP_UMRAH_TEKNIK INFORMATIKA ©</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- FUNGSI UNTUK APEXCHARTS (TIDAK BERUBAH) ---
+        function renderCharts() {
+            const spbeData = { '2021': 2.89, '2022': 3.15, '2023': 3.52, '2024': 3.80 };
+            const chartLabels = Object.keys(spbeData);
+            const chartSeriesData = Object.values(spbeData);
+            const primaryColor = '#e64848';
+
+            const barChartOptions = {
+                series: [{ name: 'Indeks SPBE', data: chartSeriesData }],
+                chart: { type: 'bar', height: '100%', fontFamily: 'Poppins, sans-serif', toolbar: { show: false } },
+                plotOptions: { bar: { horizontal: false, columnWidth: '55%', borderRadius: 5, dataLabels: { position: 'top' } } },
+                dataLabels: { enabled: true, offsetY: -20, style: { fontSize: '12px', colors: ["#304758"] } },
+                xaxis: { categories: chartLabels, labels: { style: { colors: '#6B7280', fontSize: '12px' } } },
+                yaxis: { title: { text: 'Nilai Indeks', style: { color: '#6B7280' } }, labels: { style: { colors: '#6B7280' } } },
+                fill: { colors: [primaryColor] },
+                title: { text: 'Grafik Indeks SPBE per Tahun', align: 'center', style: { fontSize: '16px', color: '#374151' } },
+                tooltip: { y: { formatter: (val) => val + " poin" } },
+                grid: { borderColor: '#f1f1f1' }
+            };
+            const barChart = new ApexCharts(document.querySelector("#barChart"), barChartOptions);
+            barChart.render();
+
+            const lineChartOptions = {
+                series: [{ name: "Indeks SPBE", data: chartSeriesData }],
+                chart: { height: '100%', type: 'line', fontFamily: 'Poppins, sans-serif', toolbar: { show: false }, zoom: { enabled: false } },
+                stroke: { curve: 'smooth', width: 3 },
+                title: { text: 'Tren Kenaikan Indeks SPBE', align: 'center', style: { fontSize: '16px', color: '#374151' } },
+                grid: { borderColor: '#f1f1f1' },
+                xaxis: { categories: chartLabels, labels: { style: { colors: '#6B7280', fontSize: '12px' } } },
+                yaxis: { title: { text: 'Nilai Indeks', style: { color: '#6B7280' } }, min: 2.5, labels: { style: { colors: '#6B7280' } } },
+                colors: [primaryColor],
+                markers: { size: 5, hover: { size: 7 } }
+            };
+            const lineChart = new ApexCharts(document.querySelector("#lineChart"), lineChartOptions);
+            lineChart.render();
+        }
+
+  // ========== NAVBAR RESPONSIVE FUNCTIONALITY ==========
+        
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const mobileMenu = document.querySelector('.mobile-menu');
+            
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    mobileMenu.classList.toggle('active');
+                });
+            }
+            
+            // Mobile dropdown toggle
+            const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+            dropdownToggles.forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    const dropdown = this.nextElementSibling;
+                    const arrow = this.querySelector('.dropdown-arrow');
+                    
+                    if (dropdown && dropdown.classList.contains('mobile-dropdown')) {
+                        dropdown.classList.toggle('active');
+                        arrow.classList.toggle('rotated');
+                    }
+                });
+            });
+            
+            // Set active menu based on current page
+            setActiveMenu();
+        });
+        
+        // Function to set active menu
+        function setActiveMenu() {
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const menuLinks = document.querySelectorAll('.nav-menu a, .mobile-menu a');
+            
+            menuLinks.forEach(link => {
+                link.classList.remove('active');
+                const href = link.getAttribute('href');
+                
+                if (href) {
+                    const linkPage = href.split('/').pop();
+                    if (linkPage === currentPage || 
+                        (currentPage === '' && linkPage === 'index.html') ||
+                        (currentPage === 'index.html' && linkPage === 'index.html')) {
+                        link.classList.add('active');
+                    }
+                }
+            });
+        }
+        
+        // ========== SCROLL ANIMATIONS ==========
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // ========== BACK TO TOP BUTTON ==========
+        const backToTopBtn = document.getElementById('back-to-top-btn');
+
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.style.display = 'block';
+            } else {
+                backToTopBtn.style.display = 'none';
+            }
+        });
+
+        backToTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // ========== BANNER SLIDESHOW ==========
+        let currentBannerSlide = 0;
+        const bannerSlides = document.querySelectorAll('.banner-slide');
+        const bannerDots = document.querySelectorAll('.banner-dot');
+
+        function showBannerSlide(index) {
+            bannerSlides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            bannerDots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+        }
+
+        function nextBannerSlide() {
+            currentBannerSlide = (currentBannerSlide + 1) % bannerSlides.length;
+            showBannerSlide(currentBannerSlide);
+        }
+
+        bannerDots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                currentBannerSlide = index;
+                showBannerSlide(currentBannerSlide);
+            });
+        });
+
+        setInterval(nextBannerSlide, 5000);
+
+        // ========== INFOGRAFIS SLIDESHOW ==========
+        let currentInfografisSlide = 0;
+        const infografisSlides = document.querySelectorAll('.infografis-slide');
+        const infografisIndicators = document.querySelectorAll('.infografis-indicators .indicator');
+
+        function showInfografisSlide(index) {
+            infografisSlides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            infografisIndicators.forEach((indicator, i) => {
+                indicator.classList.toggle('active', i === index);
+            });
+        }
+
+        function nextInfografisSlide() {
+            currentInfografisSlide = (currentInfografisSlide + 1) % infografisSlides.length;
+            showInfografisSlide(currentInfografisSlide);
+        }
+
+        infografisIndicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                currentInfografisSlide = index;
+                showInfografisSlide(currentInfografisSlide);
+            });
+        // --- MENJALANKAN SEMUA FUNGSI ---
+        renderCharts();
+        initAnimations();
+        initInfografisSlideshow();
+        initBannerSlideshow();
+        initBackToTopButton();
+         });
+            
+        const statsSection = document.querySelector('.stats-section');
+        if (statsSection) {
+            statsObserver.observe(statsSection);
+        }
+    </script>
+
+</body>
+</html>

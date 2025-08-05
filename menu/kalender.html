@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalender Kegiatan - Diskominfo Kota Tanjungpinang</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary-red: #e64848;
+            --color-bg-light: #f3f4f6;
+            --color-text-dark: #1f2937;
+            --color-text-light: #6b7280;
+            --color-border: #e5e7eb;
+            --color-event-1: #ef4444; /* Red */
+            --color-event-2: #3b82f6; /* Blue */
+            --color-event-3: #10b981; /* Green */
+            --color-event-4: #f97316; /* Orange */
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--color-bg-light);
+        }
+        .bg-primary-red { background-color: var(--color-primary-red); }
+        .text-primary-red { color: var(--color-primary-red); }
+
+        /* --- Navigasi & Dropdown --- */
+        .nav-menu .group { position: relative; }
+        .nav-menu .group ul {
+            display: none; position: absolute; top: 100%; left: 0; min-width: 12rem;
+            background-color: var(--color-primary-red); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            border-radius: 0.375rem; z-index: 9999; opacity: 0; transform: translateY(10px);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out; pointer-events: none;
+        }
+        .nav-menu .group:hover > ul {
+            display: flex !important; opacity: 1; transform: translateY(0); pointer-events: auto;
+        }
+        .nav-menu .group ul li a {
+            padding: 0.75rem 1rem; display: block; white-space: nowrap; color: white;
+            transition: background-color 0.2s ease;
+        }
+        .nav-menu .group ul li a:hover { background-color: rgba(255, 255, 255, 0.2); }
+        footer { background-color: #2D3748; }
+        .visitor-stats .stat-item { border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .visitor-stats .stat-item:last-child { border-bottom: none; }
+        .status-indicator { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; }
+
+        /* --- Desain Baru Kalender --- */
+        .calendar-day {
+            min-height: 120px;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+        .calendar-day.other-month {
+            background-color: #f9fafb;
+        }
+        
+        /* ===== CSS UNTUK TANGGAL HARI INI ===== */
+        .calendar-day.today {
+            background-color:#c336e7; /* Warna hijau */
+            color: white; /* Membuat semua teks di dalamnya menjadi putih */
+            border-radius: 0; /* Pastikan tidak ada sudut melengkung */
+        }
+        
+        .event-item {
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: white;
+            margin-bottom: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .event-item:hover {
+            transform: scale(1.05);
+        }
+        
+        /* ========== CSS UNTUK ANIMASI & TOMBOL ========== */
+        .animate-on-scroll { 
+            opacity: 0; 
+            transform: translateY(40px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out; 
+        }
+        .animate-on-scroll.is-visible { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+        #back-to-top-btn {
+            display: none; position: fixed; bottom: 30px; right: 30px; z-index: 100;
+            background-color: var(--color-primary-red); color: white; border: none;
+            cursor: pointer; padding: 15px; border-radius: 50%; width: 55px; height: 55px;
+            font-size: 20px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        #back-to-top-btn:hover {
+            background-color: #c53030; transform: scale(1.1);
+        }
+               /* ========== NAVBAR RESPONSIVE STYLES ========== */
+        .nav-menu .group { position: relative; }
+        
+        /* Desktop dropdown styles */
+        .desktop-dropdown {
+            display: none; position: absolute; top: 100%; left: 0; min-width: 12rem;
+            background-color: var(--color-primary-red); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            border-radius: 0.375rem; z-index: 9999; opacity: 0; transform: translateY(10px);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out; pointer-events: none;
+        }
+        
+        .group:hover .desktop-dropdown {
+            display: flex !important; opacity: 1; transform: translateY(0); pointer-events: auto;
+        }
+        
+        .desktop-dropdown li a {
+            padding: 0.75rem 1rem; display: block; color: white; transition: background-color 0.2s ease;
+        }
+        
+        .desktop-dropdown li a:hover { 
+            background-color: rgba(255, 255, 255, 0.2); 
+        }
+        
+        /* Desktop dropdown click functionality */
+        .dropdown-desktop-toggle.active + .desktop-dropdown {
+            display: flex !important; opacity: 1; transform: translateY(0); pointer-events: auto;
+        }
+        
+        .dropdown-arrow-desktop {
+            transition: transform 0.3s ease;
+        }
+        
+        .dropdown-arrow-desktop.rotated {
+            transform: rotate(180deg);
+        }
+        
+        /* Mobile Menu Styles */
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 8px;
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .mobile-menu-btn span {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 3px 0;
+            transition: 0.3s;
+            border-radius: 2px;
+        }
+        
+        .mobile-menu-btn.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+        
+        .mobile-menu-btn.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .mobile-menu-btn.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+        
+        .mobile-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #374151;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        
+        .mobile-menu.active {
+            display: block;
+        }
+        
+        .mobile-menu ul {
+            flex-direction: column;
+            padding: 1rem 0;
+        }
+        
+        .mobile-menu li {
+            border-bottom: 1px solid #4B5563;
+        }
+        
+        .mobile-menu li:last-child {
+            border-bottom: none;
+        }
+        
+        .mobile-menu a {
+            display: block;
+            padding: 1rem 1.5rem;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        
+        .mobile-menu a:hover {
+            background-color: #4B5563;
+        }
+        
+        /* Active menu item */
+        .nav-menu a.active {
+            color: #60A5FA !important;
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .nav-menu a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background-color: #60A5FA;
+            border-radius: 2px;
+        }
+        
+        /* Mobile dropdown styles */
+        .mobile-dropdown {
+            display: none;
+            background-color: #4B5563;
+            padding-left: 1rem;
+        }
+        
+        .mobile-dropdown.active {
+            display: block;
+        }
+        
+        .mobile-dropdown a {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .dropdown-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 1rem 1.5rem;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .dropdown-toggle:hover {
+            background-color: #4B5563;
+        }
+        
+        .dropdown-arrow {
+            transition: transform 0.3s ease;
+        }
+        
+        .dropdown-arrow.rotated {
+            transform: rotate(180deg);
+        }
+        
+        /* Desktop responsive */
+        @media (min-width: 768px) {
+            .mobile-menu-btn {
+                display: none !important;
+            }
+            
+            .nav-menu {
+                display: flex !important;
+            }
+            
+            .mobile-menu {
+                display: none !important;
+            }
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 767px) {
+            .mobile-menu-btn {
+                display: flex;
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+            
+            .nav-menu a.active::after {
+                display: none;
+            }
+            
+            .mobile-menu a.active {
+                background-color: #4B5563;
+                color: #60A5FA;
+            }
+        }
+        /* ========== CSS UNTUK POPUP MOBILE ========== */
+        .event-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .event-popup.show {
+            display: flex;
+            opacity: 1;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .popup-content {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px;
+            max-width: 400px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .event-popup.show .popup-content {
+            transform: scale(1);
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .popup-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--color-text-dark);
+        }
+
+        .popup-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #64748b;
+            padding: 5px;
+            border-radius: 50%;
+            transition: background-color 0.2s ease;
+        }
+
+        .popup-close:hover {
+            background-color: #f1f5f9;
+        }
+
+        .popup-event {
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border-left: 4px solid;
+            background-color: #f8fafc;
+        }
+
+        .popup-event-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--color-text-dark);
+        }
+
+        .popup-event-type {
+            font-size: 0.875rem;
+            color: var(--color-text-light);
+            display: flex;
+            align-items: center;
+        }
+
+        .popup-event-icon {
+            margin-right: 6px;
+        }
+
+        /* Responsive untuk desktop - sembunyikan popup, gunakan tooltip */
+        @media (min-width: 768px) {
+            .event-popup {
+                display: none !important;
+            }
+            
+            .event-item {
+                position: relative;
+            }
+            
+            .event-item::after {
+                content: attr(data-title);
+                position: absolute;
+                bottom: 100%;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: rgba(0, 0, 0, 0.8);
+                color: white;
+                padding: 8px 12px;
+                border-radius: 6px;
+                font-size: 0.75rem;
+                white-space: nowrap;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.3s ease;
+                z-index: 1000;
+            }
+            
+            .event-item:hover::after {
+                opacity: 1;
+            }
+        }
+
+        /* Mobile specific styles */
+        @media (max-width: 767px) {
+            .calendar-day {
+                min-height: 80px;
+            }
+            
+            .event-item {
+                font-size: 0.6rem;
+                padding: 1px 4px;
+                margin-bottom: 2px;
+            }
+            
+            .event-item.truncated::after {
+                content: "...";
+                font-weight: bold;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Popup untuk Mobile -->
+    <div id="eventPopup" class="event-popup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h3 class="popup-title" id="popupDate">Kegiatan Hari Ini</h3>
+                <button class="popup-close" id="closePopup">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="popupEvents" class="space-y-3">
+                <!-- Events akan diisi oleh JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <button id="back-to-top-btn" title="Kembali ke atas">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <header id="page-top" class="bg-primary-red text-white py-4 px-4 shadow-md relative z-20">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center space-x-4 mb-4 md:mb-0">
+                <img src="../images/logo.png" alt="Logo Kota Tanjungpinang" class="w-16 h-16 object-contain">
+                <div class="text-lg font-bold text-center md:text-left">
+                    <div>DINAS KOMUNIKASI DAN INFORMATIKA</div>
+                    <div>KOTA TANJUNGPINANG</div>
+                </div>
+            </div>
+            <div class="social-icons flex space-x-4 mb-4 md:mb-0">
+                <a href="https://youtube.com/DiskominfoKotaTanjungpinang" class="text-white hover:text-gray-300"><i class="fab fa-youtube text-2xl"></i></a>
+                <a href="https://instagram.com/diskominfotanjungpinang" class="text-white hover:text-gray-300"><i class="fab fa-instagram text-2xl"></i></a>
+                <a href="https://facebook.com/KominfoTanjungpinang" class="text-white hover:text-gray-300"><i class="fab fa-facebook text-2xl"></i></a>
+                <a href="#" class="text-white hover:text-gray-300"><i class="fas fa-user text-2xl"></i></a>
+            </div>
+        </div>
+    </header>
+
+  <!-- NAVBAR YANG DIPERBAIKI -->
+    <nav class="bg-gray-800 text-white p-4 shadow-md sticky top-0 z-50 relative">
+        <div class="container mx-auto">
+            <!-- Desktop Navigation -->
+            <div class="flex justify-center items-center relative">
+                <ul class="nav-menu hidden md:flex gap-6 font-bold">
+                    <li><a href="../index.html" class="hover:text-blue-300 transition duration-300">BERANDA</a></li>
+                    <li class="group">
+                        <a href="#" class="hover:text-blue-300 flex items-center transition duration-300 dropdown-desktop-toggle">
+                            PROFIL <i class="fas fa-chevron-down ml-2 text-xs dropdown-arrow-desktop"></i>
+                        </a>
+                        <ul class="group-hover:flex flex-col desktop-dropdown">
+                            <li><a href="visi.html" class="hover:bg-blue-600 rounded-t-md">Visi & Misi</a></li>
+                            <li><a href="struktur.html" class="hover:bg-blue-600">Struktur Organisasi</a></li>
+                            <li><a href="tupoksi.html" class="hover:bg-blue-600 rounded-b-md">Tupoksi</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="berita.html" class="hover:text-blue-300 transition duration-300">BERITA</a></li>
+                    <li><a href="galeri.html" class="hover:text-blue-300 transition duration-300">GALERI</a></li>
+                    <li><a href="artikel.html" class="hover:text-blue-300 transition duration-300">ARTIKEL</a></li>
+                    <li><a href="pengumuman.html" class="hover:text-blue-300 transition duration-300">PENGUMUMAN</a></li>
+                    <li><a href="kalender.html" class="hover:text-blue-300 transition duration-300 active">KALENDER</a></li>
+                    <li><a href="download.html" class="hover:text-blue-300 transition duration-300">DOWNLOAD</a></li>
+                    <li><a href="statistik.html" class="hover:text-blue-300 transition duration-300">STATISTIK</a></li>
+                </ul>
+                
+                <!-- Mobile Menu Button -->
+                <div class="mobile-menu-btn md:hidden">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            
+            <!-- Mobile Navigation -->
+            <div class="mobile-menu">
+                <ul>
+                    <li><a href="index.html" class="active">BERANDA</a></li>
+                    <li>
+                        <div class="dropdown-toggle">
+                            <span>PROFIL</span>
+                            <i class="fas fa-chevron-down dropdown-arrow"></i>
+                        </div>
+                        <div class="mobile-dropdown">
+                            <a href="menu/visi.html">Visi & Misi</a>
+                            <a href="menu/struktur.html">Struktur Organisasi</a>
+                            <a href="menu/tupoksi.html">Tupoksi</a>
+                        </div>
+                    </li>
+                    <li><a href="menu/berita.html">BERITA</a></li>
+                    <li><a href="menu/galeri.html">GALERI</a></li>
+                    <li><a href="menu/artikel.html">ARTIKEL</a></li>
+                    <li><a href="menu/pengumuman.html">PENGUMUMAN</a></li>
+                    <li><a href="menu/kalender.html">KALENDER</a></li>
+                    <li><a href="menu/download.html">DOWNLOAD</a></li>
+                    <li><a href="menu/statistik.html">STATISTIK</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto mt-8 mb-16 px-4">
+        <div class="text-center mb-8 animate-on-scroll">
+            <h1 class="text-4xl font-bold text-gray-800">Kalender Kegiatan</h1>
+            <p class="text-lg text-gray-600 mt-2">Jadwal kegiatan dan agenda penting Dinas Komunikasi dan Informatika.</p>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="max-w-2xl mx-auto mb-8 animate-on-scroll">
+            <div class="relative">
+                <input type="text" id="search-input" placeholder="Cari kegiatan atau tanggal (contoh: Rapat, 2025-08-17)" class="w-full p-4 pr-12 text-lg border-2 border-gray-300 rounded-full focus:border-primary-red focus:outline-none transition">
+                <div class="absolute top-1/2 right-5 transform -translate-y-1/2 text-gray-400">
+                    <i class="fas fa-search text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kalender -->
+        <div class="bg-white rounded-xl shadow-lg p-6 animate-on-scroll">
+            <div class="flex justify-between items-center mb-6">
+                <button id="prev-month-btn" class="p-2 rounded-full hover:bg-gray-200 transition"><i class="fas fa-chevron-left"></i></button>
+                <h2 id="current-month-year" class="text-2xl font-bold text-gray-800"></h2>
+                <button id="next-month-btn" class="p-2 rounded-full hover:bg-gray-200 transition"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div id="calendar-grid" class="grid grid-cols-7 gap-px bg-gray-200 border border-gray-200">
+                <!-- Header Hari -->
+                <div class="text-center font-semibold py-2 bg-gray-100">Min</div>
+                <div class="text-center font-semibold py-2 bg-gray-100">Sen</div>
+                <div class="text-center font-semibold py-2 bg-gray-100">Sel</div>
+                <div class="text-center font-semibold py-2 bg-gray-100">Rab</div>
+                <div class="text-center font-semibold py-2 bg-gray-100">Kam</div>
+                <div class="text-center font-semibold py-2 bg-gray-100">Jum</div>
+                <div class="text-center font-semibold py-2 bg-gray-100">Sab</div>
+                <!-- Kotak Tanggal akan di-generate oleh JS -->
+            </div>
+            <div id="calendar-body" class="grid grid-cols-7 gap-px bg-gray-200"></div>
+        </div>
+
+        <!-- Legenda -->
+        <div class="mt-8 flex justify-center flex-wrap gap-x-6 gap-y-2 text-sm text-gray-600 animate-on-scroll">
+            <div class="flex items-center"><span class="w-4 h-4 rounded-full mr-2" style="background-color: var(--color-event-1);"></span> Rapat</div>
+            <div class="flex items-center"><span class="w-4 h-4 rounded-full mr-2" style="background-color: var(--color-event-2);"></span> Pelatihan</div>
+            <div class="flex items-center"><span class="w-4 h-4 rounded-full mr-2" style="background-color: var(--color-event-3);"></span> Lapangan</div>
+            <div class="flex items-center"><span class="w-4 h-4 rounded-full mr-2" style="background-color: var(--color-event-4);"></span> Acara Publik</div>
+        </div>
+    </main>
+
+    <footer class="text-white p-10 mt-10">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="footer-section flex flex-col items-center md:items-start text-center md:text-left">
+                <img src="../images/logo.png" alt="Logo Kota Tanjungpinang" class="w-20 h-20 object-contain mb-4">
+                <h3 class="text-xl font-bold mb-4">Hubungi Kami</h3>
+                <p class="text-sm mb-2"><i class="fas fa-map-marker-alt mr-2"></i> <strong>Alamat:</strong> Jl. Basuki Rahmat No. 4, Tanjungpinang, Kepulauan Riau, Indonesia 29124</p>
+                <p class="text-sm mb-2"><i class="fas fa-envelope mr-2"></i> <strong>Email:</strong> diskominfo@tanjungpinangkota.go.id</p>
+                <p class="text-sm"><i class="fas fa-phone-alt mr-2"></i> <strong>Telepon:</strong> (0771) 21694</p>
+            </div>
+            <div class="footer-section text-center md:text-left">
+                <h3 class="text-xl font-bold mb-4">Statistik Pengunjung</h3>
+                <div class="visitor-stats text-sm space-y-2">
+                    <div class="stat-item flex justify-between items-center p-2">
+                        <span class="flex items-center"><span class="status-indicator bg-green-500"></span>Online</span>
+                        <span id="visitorsOnline" class="font-bold text-lg" data-target="15">15</span>
+                    </div>
+                    <div class="stat-item flex justify-between items-center p-2">
+                        <span class="flex items-center"><span class="status-indicator bg-yellow-500"></span>Hari ini</span>
+                        <span id="visitorsToday" class="font-bold text-lg" data-target="256">256</span>
+                    </div>
+                    <div class="stat-item flex justify-between items-center p-2">
+                        <span class="flex items-center"><span class="status-indicator bg-blue-500"></span>Total</span>
+                        <span id="visitorsTotal" class="font-bold text-lg" data-target="12456">12456</span>
+                    </div>
+                </div>
+                <button class="guest-book-btn mt-6 bg-primary-red text-white px-6 py-3 rounded-md hover:bg-red-700 transition duration-300 w-full">
+                    <i class="fas fa-book mr-2"></i> Isi Buku Tamu
+                </button>
+            </div>
+            <div class="footer-section text-center md:text-left">
+                <h3 class="text-xl font-bold mb-4">Berita Populer</h3>
+                <ul class="popular-news text-sm space-y-3">
+                    <li class="p-2 hover:bg-gray-700 rounded transition duration-300"><a href="#" class="flex items-start"><div class="news-date text-primary-red font-semibold mr-3">15 Jan</div><div>Pj. Wali Kota Beri Apresiasi pada Wajib Pajak</div></div></a></li>
+                    <li class="p-2 hover:bg-gray-700 rounded transition duration-300"><a href="#" class="flex items-start"><div class="news-date text-primary-red font-semibold mr-3">14 Jan</div><div>Rapat Koordinasi Pembangunan Infrastruktur</div></a></li>
+                    <li class="p-2 hover:bg-gray-700 rounded transition duration-300"><a href="#" class="flex items-start"><div class="news-date text-primary-red font-semibold mr-3">13 Jan</div><div>Peluncuran Program Smart City Tanjungpinang</div></a></li>
+                    <li class="p-2 hover:bg-gray-700 rounded transition duration-300"><a href="#" class="flex items-start"><div class="news-date text-primary-red font-semibold mr-3">12 Jan</div><div>Sosialisasi Aplikasi Pelayanan Digital</div></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-400">
+            <p>© 2025 Dinas Komunikasi dan Informatika Kota Tanjungpinang_KP_UMRAH_TEKNIK INFORMATIKA ©</p>
+        </div>
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // --- DATABASE KEGIATAN (SIMULASI) ---
+    const events = [
+        { date: '2025-08-15', title: 'Rapat Anggaran', type: 'Rapat', description: 'Pembahasan anggaran tahunan departemen' },
+        { date: '2025-08-12', title: 'Pelatihan Digital Marketing', type: 'Pelatihan', description: 'Workshop pemasaran digital untuk staff' },
+        { date: '2025-08-13', title: 'Evaluasi Kinerja', type: 'Rapat', description: 'Review kinerja bulanan tim' },
+        { date: '2025-08-18', title: 'Upacara 17 Agustus', type: 'Acara Publik', description: 'Peringatan Hari Kemerdekaan Indonesia' },
+        { date: '2025-08-25', title: 'Pengambilan Data Lapangan', type: 'Lapangan', description: 'Survey dan pengumpulan data di lokasi' },
+        { date: '2025-08-05', title: 'Sosialisasi Program Baru', type: 'Acara Publik', description: 'Pengenalan program baru kepada masyarakat' },
+        { date: '2025-08-04', title: 'Rapat Koordinasi', type: 'Rapat', description: 'Koordinasi antar divisi' },
+        { date: '2025-08-04', title: 'Workshop IT', type: 'Pelatihan', description: 'Pelatihan teknologi informasi' }
+    ];
+
+    const eventColors = {
+        'Rapat': 'var(--color-event-1)',
+        'Pelatihan': 'var(--color-event-2)',
+        'Lapangan': 'var(--color-event-3)',
+        'Acara Publik': 'var(--color-event-4)'
+    };
+
+    const eventIcons = {
+        'Rapat': 'fas fa-users',
+        'Pelatihan': 'fas fa-graduation-cap',
+        'Lapangan': 'fas fa-map-marker-alt',
+        'Acara Publik': 'fas fa-calendar-alt'
+    };
+
+    let currentDate = new Date();
+    const calendarBody = document.getElementById('calendar-body');
+    const currentMonthYear = document.getElementById('current-month-year');
+    const searchInput = document.getElementById('search-input');
+    const eventPopup = document.getElementById('eventPopup');
+    const popupDate = document.getElementById('popupDate');
+    const popupEvents = document.getElementById('popupEvents');
+    const closePopup = document.getElementById('closePopup');
+
+    function isMobile() {
+        return window.innerWidth <= 767;
+    }
+
+    function showEventPopup(date, dayEvents) {
+        if (!isMobile()) return;
+
+        const formattedDate = new Date(date + 'T00:00:00').toLocaleDateString('id-ID', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        popupDate.textContent = formattedDate;
+        popupEvents.innerHTML = '';
+
+        if (dayEvents.length === 0) {
+            popupEvents.innerHTML = '<p class="text-gray-500 text-center py-4">Tidak ada kegiatan pada tanggal ini</p>';
+        } else {
+            dayEvents.forEach(event => {
+                const eventElement = document.createElement('div');
+                eventElement.className = 'popup-event';
+                eventElement.style.borderLeftColor = eventColors[event.type];
+                
+                // PERBAIKAN: Menggunakan string template untuk HTML
+                const descriptionHTML = event.description ? `<div class="text-sm text-gray-600 mt-2">${event.description}</div>` : '';
+                eventElement.innerHTML = `
+                    <div class="popup-event-title">${event.title}</div>
+                    <div class="popup-event-type">
+                        <i class="${eventIcons[event.type]} popup-event-icon"></i>
+                        ${event.type}
+                    </div>
+                    ${descriptionHTML}
+                `;
+                
+                popupEvents.appendChild(eventElement);
+            });
+        }
+
+        eventPopup.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function hideEventPopup() {
+        eventPopup.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+
+    closePopup.addEventListener('click', hideEventPopup);
+    eventPopup.addEventListener('click', function(e) {
+        if (e.target === eventPopup) {
+            hideEventPopup();
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            hideEventPopup();
+        }
+    });
+
+    function renderCalendar(date, filter = '') {
+        calendarBody.innerHTML = '';
+        const year = date.getFullYear();
+        const month = date.getMonth();
+    
+        currentMonthYear.textContent = date.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const today = new Date();
+
+        // PERBAIKAN: Menggunakan string untuk HTML
+        for (let i = 0; i < firstDay; i++) {
+            calendarBody.innerHTML += '<div class="calendar-day other-month"></div>';
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayDate = new Date(year, month, day);
+            const dateString = dayDate.toISOString().split('T')[0];
+            
+            let dayEvents = events.filter(event => event.date === dateString);
+            
+            if (filter) {
+                const lowerCaseFilter = filter.toLowerCase();
+                dayEvents = dayEvents.filter(event => 
+                    event.title.toLowerCase().includes(lowerCaseFilter) ||
+                    event.type.toLowerCase().includes(lowerCaseFilter) ||
+                    dateString.includes(filter)
+                );
+            }
+
+            const isToday = dayDate.toDateString() === today.toDateString();
+            const todayClass = isToday ? 'today' : '';
+
+            let eventsHTML = '';
+            const maxEventsToShow = isMobile() ? 2 : 4;
+            
+            dayEvents.slice(0, maxEventsToShow).forEach(event => {
+                const eventTitle = isMobile() && event.title.length > 10 ? 
+                    event.title.substring(0, 10) + '...' : event.title;
+                
+                // PERBAIKAN: Menggunakan string template untuk HTML
+                eventsHTML += `
+                    <div class="event-item" 
+                         style="background-color: ${eventColors[event.type]}" 
+                         data-title="${event.title}"
+                         data-type="${event.type}"
+                         data-date="${dateString}">
+                        ${eventTitle}
+                    </div>
+                `;
+            });
+
+            if (dayEvents.length > maxEventsToShow) {
+                eventsHTML += `
+                    <div class="event-item" 
+                         style="background-color: #64748b; font-weight: bold;" 
+                         data-date="${dateString}">
+                        +${dayEvents.length - maxEventsToShow} lagi
+                    </div>
+                `;
+            }
+
+            // PERBAIKAN: Menggunakan string template untuk HTML
+            const dayHTML = `
+                <div class="calendar-day ${todayClass} bg-white p-2" data-date="${dateString}">
+                    <div class="font-semibold text-gray-800 mb-1">${day}</div>
+                    <div class="events-container">
+                        ${eventsHTML}
+                    </div>
+                </div>
+            `;
+
+            calendarBody.innerHTML += dayHTML;
+        }
+
+        document.querySelectorAll('.calendar-day').forEach(dayElement => {
+            const dateString = dayElement.getAttribute('data-date');
+            if (dateString) {
+                const dayEvents = events.filter(event => event.date === dateString);
+                
+                dayElement.addEventListener('click', function(e) {
+                    if (isMobile() && !e.target.closest('.event-item')) {
+                        showEventPopup(dateString, dayEvents);
+                    }
+                });
+            }
+        });
+
+        document.querySelectorAll('.event-item').forEach(eventElement => {
+            eventElement.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const dateString = this.getAttribute('data-date');
+                const dayEvents = events.filter(event => event.date === dateString);
+                
+                if (isMobile()) {
+                    showEventPopup(dateString, dayEvents);
+                }
+            });
+        });
+    }
+
+    document.getElementById('prev-month-btn').addEventListener('click', function() {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar(currentDate, searchInput.value);
+    });
+
+    document.getElementById('next-month-btn').addEventListener('click', function() {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar(currentDate, searchInput.value);
+    });
+
+    searchInput.addEventListener('input', function() {
+        renderCalendar(currentDate, this.value);
+    });
+
+    window.addEventListener('resize', function() {
+        renderCalendar(currentDate, searchInput.value);
+    });
+
+    function animateOnScroll() {
+        const elements = document.querySelectorAll('.animate-on-scroll');
+        elements.forEach(element => {
+            const elementTop = element.getBoundingClientRect().top;
+            const elementVisible = 150;
+            
+            if (elementTop < window.innerHeight - elementVisible) {
+                element.classList.add('is-visible');
+            }
+        });
+    }
+
+    window.addEventListener('scroll', animateOnScroll);
+    
+    const backToTopBtn = document.getElementById('back-to-top-btn');
+    
+    window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+            backToTopBtn.style.display = 'block';
+        } else {
+            backToTopBtn.style.display = 'none';
+        }
+    });
+
+    backToTopBtn.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+
+    function animateCounter(element) {
+        const target = parseInt(element.getAttribute('data-target'));
+        if (isNaN(target)) return;
+        const increment = Math.max(1, target / 100);
+        let current = 0;
+        
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                element.textContent = target.toLocaleString('id-ID');
+                clearInterval(timer);
+            } else {
+                element.textContent = Math.floor(current).toLocaleString('id-ID');
+            }
+        }, 20);
+    }
+
+    const counters = document.querySelectorAll('[data-target]');
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateCounter(entry.target);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    counters.forEach(counter => {
+        observer.observe(counter);
+    });
+
+    // Initial render
+    renderCalendar(currentDate);
+    animateOnScroll();
+});
+</script>
+</body>
+</html>

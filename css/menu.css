@@ -1,0 +1,293 @@
+/* Pengaturan Dasar dan Font */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ### GAYA HEADER DAN NAVIGASI BARU ### */
+.site-header-top, .main-nav {
+    background-color: #2d3748; /* bg-gray-800 */
+    color: white;
+    padding: 15px 5%;
+}
+
+.site-header-top {
+    padding-bottom: 0;
+}
+
+.header-container, .nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px; /* Margin bawah untuk mobile */
+}
+
+.logo img {
+    height: 50px;
+}
+
+.logo-text {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.social-media {
+    margin-bottom: 15px; /* Margin bawah untuk mobile */
+}
+
+.social-media a {
+    margin-left: 20px;
+    font-size: 22px;
+    transition: color 0.3s;
+}
+
+.social-media a:hover {
+    color: #63b3ed; /* light blue */
+}
+
+/* Navigasi Utama */
+.nav-container {
+    flex-direction: column; /* Mobile-first: search di atas, menu di bawah */
+    align-items: stretch;
+}
+
+.search-bar {
+    display: flex;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #4a5568;
+    border-right: none;
+    border-radius: 5px 0 0 5px;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.search-bar button {
+    border: none;
+    background-color: #3182ce; /* blue-600 */
+    color: white;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 0 5px 5px 0;
+}
+
+.nav-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column; /* Menu vertikal di mobile */
+    width: 100%;
+    text-align: center;
+}
+
+.nav-menu li {
+    border-bottom: 1px solid #4a5568;
+}
+.nav-menu li:last-child {
+    border-bottom: none;
+}
+
+.nav-menu a {
+    display: block;
+    padding: 15px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.nav-menu a:hover {
+    background-color: #4a5568;
+}
+
+.nav-menu .fa-chevron-down {
+    font-size: 0.7em;
+    margin-left: 8px;
+}
+
+/* Pengaturan Dropdown */
+.dropdown {
+    position: relative;
+}
+.dropdown-menu {
+    display: none;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background-color: #2b6cb0; /* blue-700 */
+}
+.dropdown-menu li {
+    border-bottom: 1px solid #4a90e2;
+}
+.dropdown:hover .dropdown-menu {
+    display: block; /* Tampilkan dropdown saat hover */
+}
+
+
+/* Main Content */
+main {
+    padding: 20px 5%;
+}
+
+.quick-links {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.link-item {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.link-item:hover {
+    transform: translateY(-5px);
+}
+
+.link-item i {
+    font-size: 40px;
+    color: #0d47a1;
+    margin-bottom: 10px;
+}
+
+.link-item span {
+    font-weight: bold;
+    display: block;
+}
+
+.article-section h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+.article-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.card img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.card-content {
+    padding: 15px;
+}
+
+/* Footer */
+.site-footer {
+    background-color: #2d3748;
+    color: #fff;
+    padding: 40px 5%;
+}
+
+.footer-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.footer-column {
+    text-align: center;
+}
+
+/* (Gaya footer lainnya tetap sama seperti sebelumnya) */
+.footer-logo{margin:0 auto 15px auto}.footer-title{font-size:20px;font-weight:700;margin-bottom:15px}.footer-column p{font-size:14px;line-height:1.6;margin-bottom:10px}.visitor-stats .stat-item{background-color:#4a5568;display:flex;justify-content:space-between;padding:8px 12px;border-radius:5px;margin-bottom:8px;font-size:14px}.stat-item span{display:flex;align-items:center}.status-dot{width:12px;height:12px;border-radius:50%;margin-right:8px}.status-dot.online{background-color:#48bb78}.status-dot.today{background-color:#f6e05e}.status-dot.total{background-color:#4299e1}.guestbook-btn{background-color:#3182ce;color:#fff;border:none;padding:12px 24px;border-radius:5px;cursor:pointer;font-weight:700;width:100%;margin-top:15px;transition:background-color .3s}.guestbook-btn:hover{background-color:#2b6cb0}.popular-news{list-style:none;padding:0;margin:0}.popular-news li{background-color:#4a5568;padding:10px;border-radius:5px;margin-bottom:10px;font-size:14px}.popular-news .news-date{color:#63b3ed;font-weight:700;display:block;margin-bottom:5px}
+
+.copyright-bar {
+    background-color: #1a202c;
+    color: #a0aec0;
+    text-align: center;
+    padding: 15px 5%;
+    font-size: 14px;
+}
+
+/* ########## MEDIA QUERIES UNTUK RESPONSIVE ########## */
+
+@media (min-width: 600px) {
+    .quick-links { grid-template-columns: repeat(3, 1fr); }
+    .article-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 768px) {
+    .footer-container { flex-direction: row; justify-content: space-between; gap: 20px; }
+    .footer-column { width: 32%; text-align: left; }
+    .footer-logo { margin-left: 0; }
+}
+
+@media (min-width: 1024px) {
+    .header-container { flex-wrap: nowrap; }
+    .logo { margin-bottom: 0; }
+    .social-media { margin-bottom: 0; }
+    
+    .nav-container {
+        flex-direction: row; /* Navigasi kembali menjadi baris */
+        justify-content: space-between;
+    }
+    .search-bar {
+        width: auto; /* Lebar search bar menyesuaikan */
+        margin-bottom: 0;
+    }
+    .nav-menu {
+        flex-direction: row; /* Menu menjadi horizontal */
+        width: auto;
+    }
+    .nav-menu li {
+        border: none;
+    }
+    .nav-menu a {
+        padding: 10px 20px;
+    }
+
+    /* Dropdown di Desktop */
+    .dropdown-menu {
+        position: absolute; /* Posisikan dropdown di bawah menu */
+        top: 100%;
+        left: 0;
+        width: 200px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        border-radius: 0 0 5px 5px;
+    }
+    .dropdown-menu li:last-child {
+        border-bottom: none;
+    }
+
+    .article-grid { grid-template-columns: repeat(3, 1fr); }
+    .quick-links { grid-template-columns: repeat(5, 1fr); }
+}

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Album Infografis - Diskominfo Kota Tanjungpinang</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary-red: #e64848;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3f4f6;
+            color: #333;
+        }
+        .bg-primary-red { background-color: var(--color-primary-red); }
+        .text-primary-red { color: var(--color-primary-red); }
+        .hover\:bg-primary-red:hover { background-color: var(--color-primary-red); }
+        .infografis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        footer { background-color: #2D3748; }
+        .visitor-stats .stat-item { border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .visitor-stats .stat-item:last-child { border-bottom: none; }
+        .status-indicator { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; }
+        .infografis-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .infografis-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        .infografis-card img {
+            width: 100%;
+            height: 250px; /* Fixed height for consistency */
+            object-fit: cover;
+            display: block;
+        }
+        .infografis-card-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .infografis-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #1f2937;
+        }
+        .infografis-card p {
+            font-size: 0.95rem;
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        .infografis-card .btn-view {
+            display: inline-block;
+            background-color: var(--color-primary-red);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            align-self: flex-start;
+        }
+        .infografis-card .btn-view:hover {
+            background-color: #c53030;
+        }
+        .header-album {
+            background-color: #2D3748;
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .header-album h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .header-album p {
+            font-size: 1.1rem;
+            color: #d1d5db;
+        }
+        .back-to-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            text-decoration: none;
+            margin-top: 1rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-to-home:hover {
+            color: var(--color-primary-red);
+        }
+    </style>
+</head>
+<body>
+    <header class="header-album">
+        <div class="container mx-auto px-4">
+            <h1>Album Infografis</h1>
+            <p>Kumpulan data dan informasi visual dari Diskominfo Kota Tanjungpinang</p>
+            <a href="../index.html" class="back-to-home">
+                <i class="fas fa-arrow-left"></i> Kembali ke Beranda
+            </a>
+        </div>
+    </header>
+
+<section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="infografis-grid">
+                <!-- Infografis 1 -->
+                <div class="infografis-card">
+                    <img src="../images/spbe 2023.jpg" alt="Infografis Data Analysis">
+                    <div class="infografis-card-content">
+                        <h3>Domain Layanan SPBE 3,95</h3>
+                        <p>Nilai index SPBE Tahun 2023</p>
+                        <a href="../images/spbe 2023.jpg" target="_blank" class="btn-view">Lihat Gambar</a>
+                    </div>
+                </div>
+
+                <!-- Infografis 2 -->
+                <div class="infografis-card">
+                    <img src="../images/brain chiper.jpg" alt="Infografis Data Analysis 2">
+                    <div class="infografis-card-content">
+                        <h3>Ransomware LockBit 3.0 Variant</h3>
+                        <p>Aktor ancaman yang terkait dengan Brain Cipher juga diketahui mengandalkan broker akses awal (IAB) terutama untuk memungkinkan pengiriman awal ke lingkungan target.</p>
+                        <a href="../images/brain chiper.jpg" target="_blank" class="btn-view">Lihat Gambar</a>
+                    </div>
+                </div>
+
+                <!-- Infografis 3 -->
+                <div class="infografis-card">
+                    <img src="../images/insiden siber.jpg" alt="Infografis Statistik">
+                    <div class="infografis-card-content">
+                        <h3>Prosedur Penanganan Insiden</h3>
+                        <p>Terdiri dari 4 tahapan utama yaitu
+                        persiapan, identifikasi &Analis, Mitigasi, Serta Penghapusan Konten</p>
+                        <a href="../images/insiden siber.jpg" target="_blank" class="btn-view">Lihat Gambar</a>
+                    </div>
+                </div>
+
+                <!-- Infografis 4 -->
+                <div class="infografis-card">
+                    <img src="images/infografis4.png" alt="Infografis Statistik 2">
+                    <div class="infografis-card-content">
+                        <h3>Infografis Statistik Lanjutan</h3>
+                        <p>Detail statistik dengan visualisasi yang mendalam untuk laporan.</p>
+                        <a href="images/infografis4.png" target="_blank" class="btn-view">Lihat Gambar</a>
+                    </div>
+                </div>
+
+                <!-- Infografis 5 -->
+                <div class="infografis-card">
+                    <img src="images/infografis5.jpeg" alt="Infografis Data Pemerintah">
+                    <div class="infografis-card-content">
+                        <h3>Infografis Data Pemerintah</h3>
+                        <p>Informasi penting mengenai data dan kebijakan pemerintah.</p>
+                        <a href="images/infografis5.jpeg" target="_blank" class="btn-view">Lihat Gambar</a>
+                    </div>
+                </div>
+
+                <!-- Infografis 6 -->
+                <div class="infografis-card">
+                    <img src="images/infografis6.jpeg" alt="Infografis Layanan Publik">
+                    <div class="infografis-card-content">
+                        <h3>Infografis Layanan Publik</h3>
+                        <p>Panduan visual tentang berbagai layanan yang tersedia untuk masyarakat.</p>
+                        <a href="images/infografis6.jpeg" target="_blank" class="btn-view">Lihat Gambar</a>
+                    </div>
+                </div>
+
+                <!-- Infografis 7 -->
+                <div class="infografis-card">
+                    <img src="images/infografis7.jpeg" alt="Infografis Statistik Kota">
+                    <div class="infografis-card-content">
+                        <h3>Infografis Statistik Kota</h3>
+                        <p>Data statistik penting mengenai perkembangan dan kondisi kota.</p>
+                        <a href="images/infografis7.jpeg" target="_blank" class="btn-view">Lihat Gambar</a>
+                    </div>
+                </div>
+
+                <!-- Infografis 8 -->
+                <div class="infografis-card">
+                    <img src="images/infografis8.webp" alt="Infografis Alur Pelayanan">
+                    <div class="infografis-card-content">
+                        <h3>Infografis Alur Pelayanan</h3>
+                        <p>Visualisasi langkah-langkah dalam proses pelayanan publik.</p>
+                        <a href="images/infografis8.webp" target="_blank" class="btn-view">Lihat Gambar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="text-white p-10 mt-10">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="footer-section flex flex-col items-center md:items-start text-center md:text-left">
+                <img src="../images/logo.png" alt="Logo Kota Tanjungpinang" class="w-20 h-20 object-contain mb-4">
+                <h3 class="text-xl font-bold mb-4">Hubungi Kami</h3>
+                <p class="text-sm mb-2"><i class="fas fa-map-marker-alt mr-2"></i> <strong>Alamat:</strong> Jl. Basuki Rahmat No. 4, Tanjungpinang, Kepulauan Riau, Indonesia 29124</p>
+                <p class="text-sm mb-2"><i class="fas fa-envelope mr-2"></i> <strong>Email:</strong> diskominfo@tanjungpinangkota.go.id</p>
+                <p class="text-sm"><i class="fas fa-phone-alt mr-2"></i> <strong>Telepon:</strong> (0771 ) 21694</p>
+            </div>
+            <div class="footer-section text-center md:text-left">
+                <h3 class="text-xl font-bold mb-4">Statistik Pengunjung</h3>
+                <div class="visitor-stats text-sm space-y-2">
+                    <div class="stat-item flex justify-between items-center p-2">
+                        <span class="flex items-center"><span class="status-indicator bg-green-500"></span>Online</span>
+                        <span id="visitorsOnline" class="font-bold text-lg" data-target="15">15</span>
+                    </div>
+                    <div class="stat-item flex justify-between items-center p-2">
+                        <span class="flex items-center"><span class="status-indicator bg-yellow-500"></span>Hari ini</span>
+                        <span id="visitorsToday" class="font-bold text-lg" data-target="256">256</span>
+                    </div>
+                    <div class="stat-item flex justify-between items-center p-2">
+                        <span class="flex items-center"><span class="status-indicator bg-blue-500"></span>Total</span>
+                        <span id="visitorsTotal" class="font-bold text-lg" data-target="12456">12456</span>
+                    </div>
+                </div>
+                <button class="guest-book-btn mt-6 bg-primary-red text-white px-6 py-3 rounded-md hover:bg-red-700 transition duration-300 w-full">
+                    <i class="fas fa-book mr-2"></i> Isi Buku Tamu
+                </button>
+            </div>
+            <div class="footer-section text-center md:text-left">
+                <h3 class="text-xl font-bold mb-4">Berita Populer</h3>
+                <ul class="popular-news text-sm space-y-3">
+                    <li class="p-2 hover:bg-gray-700 rounded transition duration-300"><a href="#" class="flex items-start"><div class="news-date text-primary-red font-semibold mr-3">15 Jan</div><div>Pj. Wali Kota Beri Apresiasi pada Wajib Pajak</div></a></li>
+                    <li class="p-2 hover:bg-gray-700 rounded transition duration-300"><a href="#" class="flex items-start"><div class="news-date text-primary-red font-semibold mr-3">14 Jan</div><div>Rapat Koordinasi Pembangunan Infrastruktur</div></a></li>
+                    <li class="p-2 hover:bg-gray-700 rounded transition duration-300"><a href="#" class="flex items-start"><div class="news-date text-primary-red font-semibold mr-3">13 Jan</div><div>Peluncuran Program Smart City Tanjungpinang</div></a></li>
+                    <li class="p-2 hover:bg-gray-700 rounded transition duration-300"><a href="#" class="flex items-start"><div class="news-date text-primary-red font-semibold mr-3">12 Jan</div><div>Sosialisasi Aplikasi Pelayanan Digital</div></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-400">
+            <p>© 2025 Dinas Komunikasi dan Informatika Kota Tanjungpinang_KP_UMRAH_TEKNIK INFORMATIKA ©</p>
+        </div>
+    </footer>
+</body>
+</html>
+
+
